@@ -549,7 +549,7 @@
                 <h1>Kenali Jenis<br><span class="highlight">Kulit Wajahmu</span></h1>
                 <p>Analisis wajahmu dengan teknologi AI canggih untuk mendapatkan rekomendasi produk skincare yang tepat dan personal sesuai jenis kulitmu.</p>
                 <div class="hero-buttons">
-                    <a href="#" class="btn btn-primary">
+                    <a href="{{ route('scanner') }}" class="btn btn-primary">
                         Coba Sekarang ➜
                     </a>
                     <a href="#" class="btn btn-secondary">
@@ -659,7 +659,7 @@
         <div class="container">
             <h2>Siap Menemukan Skincare yang Tepat?</h2>
             <p>Mulai perjalanan skincare-mu sekarang dan dapatkan kulit sehat yang kamu impikan</p>
-            <a href="#" class="btn btn-primary">Coba Sekarang Gratis ➜</a>
+            <a href="{{ route('scanner') }}" class="btn btn-primary">Coba Sekarang Gratis ➜</a>
             <div class="stats">
                 <div class="stat-item">
                     <div class="stat-value">50K+</div>
