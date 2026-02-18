@@ -416,20 +416,177 @@
         }
 
         /* Responsive */
+        @media (max-width: 1024px) {
+            .back-btn,
+            .torch-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+
+            .info-text {
+                font-size: 1rem;
+            }
+
+            .controls-bottom {
+                padding: 25px 20px 35px;
+                gap: 15px;
+            }
+
+            .shutter-btn {
+                width: 75px;
+                height: 75px;
+                font-size: 1.8rem;
+            }
+        }
+
         @media (max-width: 768px) {
-            .face-frame {
-                width: 250px;
-                height: 300px;
+            .controls-top {
+                padding: 15px;
+            }
+
+            .back-btn,
+            .torch-btn {
+                width: 42px;
+                height: 42px;
+                font-size: 1.1rem;
+            }
+
+            .info-text {
+                font-size: 0.9rem;
+                font-weight: 500;
+            }
+
+            .controls-bottom {
+                padding: 20px 15px 30px;
+                gap: 12px;
             }
 
             .shutter-btn {
                 width: 70px;
                 height: 70px;
-                font-size: 1.5rem;
+                font-size: 1.3rem;
+            }
+
+            .face-frame {
+                width: 250px;
+                height: 300px;
+            }
+
+            .alignment-point {
+                width: 6px;
+                height: 6px;
+            }
+
+            .corner-marker {
+                width: 25px;
+                height: 25px;
+                border-width: 2px;
+            }
+
+            .status-message {
+                font-size: 0.85rem;
+                padding: 10px 20px;
+            }
+
+            .countdown {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .controls-top {
+                padding: 12px;
+                gap: 10px;
+            }
+
+            .back-btn,
+            .torch-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+                min-height: 44px;
+                min-width: 44px;
             }
 
             .info-text {
+                font-size: 0.8rem;
+                font-weight: 600;
+            }
+
+            .controls-bottom {
+                padding: 15px 12px 25px;
+                gap: 8px;
+            }
+
+            .shutter-btn {
+                width: 65px;
+                height: 65px;
+                font-size: 1.2rem;
+                border-width: 4px;
+                min-height: 44px;
+            }
+
+            .face-frame {
+                width: 200px;
+                height: 250px;
+            }
+
+            .face-oval {
+                border-width: 2px;
+            }
+
+            .alignment-point {
+                width: 5px;
+                height: 5px;
+                border-width: 1px;
+            }
+
+            .corner-marker {
+                width: 20px;
+                height: 20px;
+                border-width: 2px;
+            }
+
+            .horizontal-line,
+            .vertical-line {
+                height: 1px;
+                width: 1px;
+            }
+
+            .status-message {
+                top: 25%;
+                font-size: 0.8rem;
+                padding: 8px 16px;
+            }
+
+            .countdown {
+                font-size: 2.5rem;
+            }
+
+            .permission-denied {
+                padding: 15px;
+            }
+
+            .permission-icon {
+                font-size: 3rem;
+                margin-bottom: 15px;
+            }
+
+            .permission-denied h2 {
+                font-size: 1.3rem;
+                margin-bottom: 8px;
+            }
+
+            .permission-denied p {
+                font-size: 0.85rem;
+                margin-bottom: 15px;
+            }
+
+            .retry-btn {
+                padding: 10px 25px;
                 font-size: 0.9rem;
+                min-height: 44px;
             }
         }
     </style>

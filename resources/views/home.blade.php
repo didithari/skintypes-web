@@ -493,34 +493,364 @@
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .hero {
+                padding: 60px 0;
+            }
+
             .hero .container {
-                grid-template-columns: 1fr;
+                gap: 40px;
             }
 
             .hero-content h1 {
-                font-size: 2rem;
+                font-size: 2.5rem;
             }
 
-            .steps-grid {
-                grid-template-columns: 1fr;
+            .hero-image {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 15px 0;
             }
 
-            .features-grid {
-                grid-template-columns: 1fr;
+            .logo {
+                font-size: 1.2rem;
             }
 
-            .footer-content {
-                grid-template-columns: 1fr;
-            }
-
-            .stats {
-                flex-direction: column;
-                gap: 2rem;
+            .logo-icon {
+                width: 35px;
+                height: 35px;
             }
 
             nav ul {
                 display: none;
+            }
+
+            .hero {
+                padding: 40px 0;
+            }
+
+            .hero .container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .hero-content h1 {
+                font-size: 1.75rem;
+                line-height: 1.3;
+            }
+
+            .hero-content p {
+                font-size: 1rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                padding: 12px 30px;
+                font-size: 0.95rem;
+                width: 100%;
+            }
+
+            .hero-image {
+                padding: 20px;
+            }
+
+            .analysis-badge,
+            .combination-badge {
+                padding: 10px 15px;
+                font-size: 0.85rem;
+            }
+
+            .section-title {
+                margin-bottom: 30px;
+            }
+
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+
+            .section-title p {
+                font-size: 0.95rem;
+            }
+
+            .steps {
+                padding: 50px 0;
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .step-card h3 {
+                font-size: 1.1rem;
+            }
+
+            .step-card p {
+                font-size: 0.9rem;
+            }
+
+            .features {
+                padding: 50px 0;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .feature-card {
+                padding: 1.5rem;
+            }
+
+            .feature-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+
+            .feature-content h3 {
+                font-size: 1.1rem;
+            }
+
+            .cta {
+                padding: 50px 0;
+            }
+
+            .cta h2 {
+                font-size: 1.8rem;
+            }
+
+            .cta p {
+                font-size: 0.95rem;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
+
+            .stat-label {
+                font-size: 0.9rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 12px;
+            }
+
+            nav {
+                padding: 12px 0;
+            }
+
+            .logo {
+                font-size: 1rem;
+            }
+
+            .logo-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+            }
+
+            .hero {
+                padding: 30px 0;
+            }
+
+            .hero-content h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .hero-content p {
+                font-size: 0.9rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                gap: 10px;
+                margin-bottom: 1.5rem;
+            }
+
+            .btn {
+                padding: 12px 25px;
+                font-size: 0.9rem;
+                min-height: 44px;
+            }
+
+            .hero-badge {
+                font-size: 0.85rem;
+            }
+
+            .hero-image {
+                padding: 15px;
+            }
+
+            .analysis-badge {
+                top: 40px;
+                left: 20px;
+            }
+
+            .combination-badge {
+                bottom: 40px;
+                right: 20px;
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+
+            .section-title h2 {
+                font-size: 1.5rem;
+            }
+
+            .section-title p {
+                font-size: 0.85rem;
+            }
+
+            .steps {
+                padding: 35px 0;
+            }
+
+            .steps-grid {
+                gap: 15px;
+            }
+
+            .step-number {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+                margin-bottom: 1rem;
+            }
+
+            .step-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.8rem;
+            }
+
+            .step-card h3 {
+                font-size: 1rem;
+                margin-bottom: 0.6rem;
+            }
+
+            .step-card p {
+                font-size: 0.85rem;
+            }
+
+            .features {
+                padding: 35px 0;
+            }
+
+            .features-grid {
+                gap: 1.2rem;
+            }
+
+            .feature-card {
+                padding: 1.2rem;
+                gap: 1rem;
+            }
+
+            .feature-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+                min-width: 45px;
+            }
+
+            .feature-content h3 {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .feature-content p {
+                font-size: 0.85rem;
+            }
+
+            .cta {
+                padding: 35px 0;
+            }
+
+            .cta h2 {
+                font-size: 1.5rem;
+            }
+
+            .cta p {
+                font-size: 0.85rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .cta .btn {
+                min-height: 44px;
+            }
+
+            .stats {
+                gap: 1.2rem;
+            }
+
+            .stat-value {
+                font-size: 1.8rem;
+            }
+
+            footer {
+                padding: 40px 0 20px;
+            }
+
+            .footer-about p {
+                font-size: 0.85rem;
+            }
+
+            .footer-section h4 {
+                font-size: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .footer-section ul li {
+                margin-bottom: 0.6rem;
+            }
+
+            .footer-section a {
+                font-size: 0.85rem;
+            }
+
+            .social-links {
+                gap: 0.8rem;
+            }
+
+            .social-link {
+                width: 36px;
+                height: 36px;
+            }
+
+            .footer-bottom {
+                font-size: 0.8rem;
+                gap: 1rem;
             }
         }
     </style>

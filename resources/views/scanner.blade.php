@@ -396,6 +396,14 @@
 
         /* Responsive */
         @media (max-width: 1024px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .scanner-section {
+                padding: 50px 0;
+            }
+
             .content-wrapper {
                 grid-template-columns: 1fr;
                 gap: 40px;
@@ -405,23 +413,192 @@
                 grid-template-columns: 1fr;
             }
 
+            .section-title {
+                margin-bottom: 40px;
+            }
+
             .section-title h1 {
                 font-size: 2rem;
             }
         }
 
         @media (max-width: 768px) {
+            header .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .logo-icon {
+                width: 35px;
+                height: 35px;
+            }
+
+            .header-nav a {
+                font-size: 0.9rem;
+            }
+
+            .scanner-section {
+                padding: 40px 0;
+            }
+
             .section-title h1 {
-                font-size: 1.5rem;
+                font-size: 1.6rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .section-title p {
+                font-size: 0.95rem;
+            }
+
+            .content-wrapper {
+                gap: 30px;
             }
 
             .instructions-grid {
                 grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .instruction-card {
+                padding: 25px;
+            }
+
+            .instruction-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.8rem;
+                margin-bottom: 1rem;
+            }
+
+            .instruction-card h3 {
+                font-size: 1.1rem;
+            }
+
+            .instruction-card p {
+                font-size: 0.9rem;
             }
 
             .phone {
                 width: 250px;
                 height: 500px;
+            }
+
+            .cta-container {
+                margin-top: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 12px;
+            }
+
+            header {
+                padding: 12px 0;
+            }
+
+            header .container {
+                gap: 8px;
+            }
+
+            .logo {
+                font-size: 1rem;
+            }
+
+            .logo-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+            }
+
+            .header-nav a {
+                font-size: 0.85rem;
+            }
+
+            .scanner-section {
+                padding: 30px 0;
+            }
+
+            .section-title {
+                margin-bottom: 25px;
+            }
+
+            .section-title h1 {
+                font-size: 1.3rem;
+                margin-bottom: 0.6rem;
+            }
+
+            .section-title p {
+                font-size: 0.85rem;
+            }
+
+            .content-wrapper {
+                gap: 20px;
+            }
+
+            .instructions-grid {
+                gap: 15px;
+            }
+
+            .instruction-card {
+                padding: 20px;
+            }
+
+            .instruction-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1.5rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .instruction-card h3 {
+                font-size: 1rem;
+            }
+
+            .instruction-card p {
+                font-size: 0.8rem;
+            }
+
+            .phone {
+                width: 220px;
+                height: 440px;
+            }
+
+            .phone-header {
+                font-size: 0.7rem;
+                padding: 6px 10px;
+            }
+
+            .phone-app-name {
+                font-size: 0.8rem;
+                padding: 6px;
+            }
+
+            .check-mark {
+                width: 35px;
+                height: 35px;
+                font-size: 1.2rem;
+                top: 10px;
+                right: 10px;
+            }
+
+            .cta-container {
+                margin-top: 25px;
+            }
+
+            .btn-primary {
+                padding: 12px 30px;
+                font-size: 0.9rem;
+                min-height: 44px;
+                width: 100%;
+            }
+
+            .cta-note {
+                font-size: 0.8rem;
             }
         }
     </style>
