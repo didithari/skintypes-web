@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>SkinAI - Camera Scan</title>
     <style>
         * {
@@ -741,7 +742,7 @@
             const formData = new FormData();
             formData.append('photo', blob, 'photo.jpg');
 
-            fetch('/api/analyze-skin', {
+            fetch('/camera/predict', {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -750,11 +751,18 @@
             })
             .then(response => response.json())
             .then(data => {
-                showStatus('✓ Analisis selesai!');
-                setTimeout(() => {
-                    // Redirect to results page
-                    window.location.href = '/results?type=' + data.skinType;
-                }, 1500);
+                if (data.success) {
+                    showStatus('✓ Analisis selesai!');
+                    console.log('Result:', data);
+                    setTimeout(() => {
+                        // Show result or redirect
+                        alert('Tipe Kulit: ' + data.skinType + '\nPrediksi: ' + data.prediction);
+                        // window.location.href = '/results?type=' + data.skinType;
+                    }, 1500);
+                } else {
+                    showStatus('❌ ' + (data.message || 'Gagal menganalisis'));
+                    shutterBtn.disabled = false;
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
