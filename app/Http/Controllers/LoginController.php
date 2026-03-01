@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 class LoginController extends Controller
 {
@@ -14,6 +12,10 @@ class LoginController extends Controller
      */
     public function showLogin()
     {
+        if (Auth::check()) {
+            return redirect()->route('admin.dashboard');
+        }
+
         return view('login');
     }
 
@@ -35,7 +37,7 @@ class LoginController extends Controller
             // Update last login time
             Auth::user()->update(['last_login_at' => now()]);
             
-            return redirect()->intended('/')->with('success', 'Login berhasil!');
+            return redirect()->intended(route('admin.dashboard'))->with('success', 'Login berhasil!');
         }
 
         return back()->withErrors([
@@ -52,6 +54,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/')->with('success', 'Anda telah logout.');
+        return redirect()->route('login')->with('success', 'Anda telah logout.');
     }
 }

@@ -755,9 +755,12 @@
                     showStatus('✓ Analisis selesai!');
                     console.log('Result:', data);
                     setTimeout(() => {
-                        // Show result or redirect
-                        alert('Tipe Kulit: ' + data.skinType + '\nPrediksi: ' + data.prediction);
-                        // window.location.href = '/results?type=' + data.skinType;
+                        // Redirect to result page
+                        if (data.redirectUrl) {
+                            window.location.href = data.redirectUrl;
+                        } else {
+                            alert('Tipe Kulit: ' + data.skinType + '\nPrediksi: ' + data.prediction);
+                        }
                     }, 1500);
                 } else {
                     showStatus('❌ ' + (data.message || 'Gagal menganalisis'));
