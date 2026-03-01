@@ -14,13 +14,23 @@
         }
         .admin-wrapper {
             min-height: 100vh;
-            display: grid;
-            grid-template-columns: 230px 1fr;
+            display: flex;
+        }
+        .admin-wrapper aside {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 230px;
+            z-index: 100;
+            overflow-y: auto;
         }
         .admin-main {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            margin-left: 230px;
+            flex: 1;
         }
         .admin-content {
             padding: 22px 28px;
@@ -132,6 +142,43 @@
         .pagination-wrap {
             margin-top: 14px;
         }
+        .pagination-wrap .pagination {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 4px;
+        }
+        .pagination-wrap .pagination li {
+            display: inline;
+        }
+        .pagination-wrap .pagination a,
+        .pagination-wrap .pagination span {
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 12px;
+            text-decoration: none;
+            color: #1f2937;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 30px;
+            height: 30px;
+        }
+        .pagination-wrap .pagination a:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+        .pagination-wrap .pagination .active span {
+            background: #059669;
+            color: #fff;
+            border-color: #059669;
+        }
+        .pagination-wrap .pagination .disabled span {
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
         .actions {
             display: flex;
             gap: 8px;
@@ -182,6 +229,10 @@
             padding: 9px 10px;
             font-size: 14px;
             background: #fff;
+        }
+        .field input[type="file"] {
+            padding: 6px 10px;
+            cursor: pointer;
         }
         .field textarea { min-height: 110px; resize: vertical; }
         .alert {

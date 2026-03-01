@@ -10,7 +10,7 @@
             <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Kembali</a>
         </div>
 
-        <form action="{{ route('admin.products.store') }}" method="POST" class="form-grid">
+        <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="form-grid">
             @csrf
 
             <div class="field">
@@ -36,6 +36,17 @@
             <div class="field form-full">
                 <label for="description">Deskripsi</label>
                 <textarea id="description" name="description">{{ old('description') }}</textarea>
+            </div>
+
+            <div class="field">
+                <label for="price">Harga</label>
+                <input type="number" id="price" name="price" value="{{ old('price') }}" placeholder="0">
+            </div>
+
+            <div class="field">
+                <label for="image_url">Gambar Product</label>
+                <input type="file" id="image_url" name="image_url" accept="image/*">
+                <small style="color:#6b7280; margin-top:4px; display:block;">Format: JPG, PNG, GIF (Max 2MB)</small>
             </div>
 
             <div class="form-full">

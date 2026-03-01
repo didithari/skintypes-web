@@ -14,9 +14,11 @@
             <table>
                 <thead>
                     <tr>
+                        <th>Gambar</th>
                         <th>Nama</th>
                         <th>Brand</th>
                         <th>Skin Type</th>
+                        <th>Harga</th>
                         <th>Deskripsi</th>
                         <th>Aksi</th>
                     </tr>
@@ -24,10 +26,18 @@
                 <tbody>
                     @forelse($products as $product)
                         <tr>
+                            <td>
+                                @if($product->image_url)
+                                    <img src="{{ asset('storage/' . $product->image_url) }}" alt="{{ $product->name }}" style="width:50px; height:50px; object-fit:cover; border-radius:6px;">
+                                @else
+                                    <div style="width:50px; height:50px; background:#f3f4f6; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#9ca3af; font-size:12px;">No image</div>
+                                @endif
+                            </td>
                             <td>{{ $product->name }}</td>
                             <td>{{ $product->brand ?? '-' }}</td>
                             <td><span class="badge">{{ $product->skinType->name ?? '-' }}</span></td>
-                            <td>{{ $product->description ?? '-' }}</td>
+                            <td>{{ $product->price ? 'Rp ' . number_format($product->price, 0, ',', '.') : '-' }}</td>
+                            <td>{{ Str::words($product->description, 5, '...') ?? '-' }}</td>
                             <td>
                                 <div class="actions">
                                     <a class="btn btn-secondary" href="{{ route('admin.products.edit', $product) }}">Edit</a>
@@ -41,7 +51,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="muted">Belum ada data product.</td>
+                            <td colspan="7" class="muted">Belum ada data product.</td>
                         </tr>
                     @endforelse
                 </tbody>
