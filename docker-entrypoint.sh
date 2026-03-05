@@ -1,26 +1,24 @@
 #!/bin/bash
+set -e
+
+cd /var/www
 
 # Install composer dependencies
-composer install --no-interaction --optimize-autoloader
+echo "Installing dependencies..."
+composer install --no-interaction --optimize-autoloader --no-dev
 
-# Set permissions
-chmod -R 775 storage bootstrap/cache
-chown -R www-data:www-data storage bootstrap/cache
-
-# Generate application key if not exists
+# Copy .env if not exists
 if [ ! -f .env ]; then
+    echo "Creating .env file..."
     cp .env.example .env
+    php artisan key:generate --force
 fi
 
-php artisan key:generate --force 2>/dev/null || true
-
-# Run migrations
-php artisan migrate --force 2>/dev/null || true
-
-# Clear and cache config
-php artisan config:clear
-php artisan cache:clear
-php artisan view:clear
+# Set proper permissions
+echo "Setting permissions..."
+chown -R www-data:www-data /var/www
+chmod -R 775 storage bootstrap/cache
 
 # Start PHP-FPM
+echo "Starting PHP-FPM..."
 exec php-fpm
