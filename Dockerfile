@@ -23,18 +23,11 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy existing application directory contents
-COPY . /var/www
-
-# Copy existing application directory permissions
-COPY --chown=www-data:www-data . /var/www
-
-# Install dependencies
-RUN composer install --no-interaction --optimize-autoloader --no-dev
-
-# Change current user to www-data
-USER www-data
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
-CMD ["php-fpm"]
+
+ENTRYPOINT ["docker-entrypoint.sh"]
