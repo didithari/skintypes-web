@@ -1,39 +1,27 @@
 #!/bin/bash
-set -e
 
 cd /var/www
 
+# Fix git safe directory warning
+git config --global --add safe.directory /var/www || true
+
 # Install composer dependencies
-echo "Installing dependencies..."
-composer install --no-interaction --optimize-autoloader --no-dev
-
-# Copy .env if not exists
-if [ ! -f .env ]; then
-    echo "Creating .env file..."
-    cp .env.example .env
-    php artisan key:generate --force
-fi
-
-# Create SQLite database if not exists
-if [ ! -f database/database.sqlite ]; then
-    echo "Creating SQLite database..."
-    touch database/database.sqlite
-fi
+composer install --no-interaction --optimize-autoloader --no-dev || true
 
 # Set proper permissions
-echo "Setting permissions..."
 chown -R www-data:www-data /var/www
-chmod -R 775 storage bootstrap/cache database
-chmod 664 database/database.sqlite
+chmod -R 775 storage bootstrap/cache 2>/dev/null || true
 
-# Run migrations
-echo "Running migrations..."
-php artisan migrate --force 2>/dev/null || true
-
-# Clear cache
-php artisan config:clear
-php artisan cache:clear
+# Wait for MySQL to be ready
+echo "Waiting for MySQL to be ready..."
+for i in {1..30}; do
+    if nc -z db 3306 2>/dev/null; then
+        echo "MySQL is ready!"
+        break
+    fi
+    echo "MySQL not ready, waiting... ($i/30)"
+    sleep 2
+done
 
 # Start PHP-FPM
-echo "Starting PHP-FPM..."
 exec php-fpm
