@@ -142,6 +142,21 @@
             object-fit: contain;
         }
 
+        .product-image-fallback {
+            width: 120px;
+            height: 160px;
+            border-radius: 10px;
+            background: #f1f3f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #6c757d;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 10px;
+        }
+
         .product-name {
             font-size: 18px;
             font-weight: 600;
@@ -495,7 +510,30 @@
 
                         <!-- Product Image -->
                         <div class="product-image">
-                            <img src="https://via.placeholder.com/120x160/e8f5e9/66bb6a?text={{ urlencode($product->brand ?? 'Product') }}" alt="{{ $product->name }}">
+                            @php
+                                $productImage = null;
+
+                                if (!empty($product->image_url)) {
+                                    $imagePath = ltrim((string) $product->image_url, '/');
+
+                                    if (\Illuminate\Support\Str::startsWith($imagePath, ['http://', 'https://'])) {
+                                        $productImage = $imagePath;
+                                    } elseif (\Illuminate\Support\Str::startsWith($imagePath, 'storage/')) {
+                                        $productImage = asset($imagePath);
+                                    } else {
+                                        $productImage = asset('storage/' . $imagePath);
+                                    }
+                                }
+                            @endphp
+
+                            <img
+                                src="{{ $productImage ?: 'data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"120\" height=\"160\" viewBox=\"0 0 120 160\"><rect width=\"120\" height=\"160\" rx=\"10\" fill=\"%23f1f3f5\"/><text x=\"60\" y=\"84\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12\" fill=\"%236c757d\">No Image</text></svg>' }}"
+                                alt="{{ $product->name }}"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                            >
+                            <div class="product-image-fallback" style="display: none;">
+                                {{ $product->brand ?? 'Product' }}
+                            </div>
                         </div>
 
                         <!-- Product Info -->
