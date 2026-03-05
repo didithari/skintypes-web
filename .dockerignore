@@ -17,3 +17,7 @@ phpunit.xml
 tests
 .editorconfig
 .styleci.yml
+certbot/
+*.sh
+SSL-SETUP.md
+nginx-*.conf
