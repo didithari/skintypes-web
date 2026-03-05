@@ -3,7 +3,10 @@
 .gitattributes
 .env.example
 README.md
+SSL-SETUP.md
 docker-compose.yml
+Dockerfile
+.dockerignore
 node_modules
 npm-debug.log
 vendor
@@ -18,6 +21,7 @@ tests
 .editorconfig
 .styleci.yml
 certbot/
-*.sh
-SSL-SETUP.md
 nginx-*.conf
+docker-entrypoint.sh
+init-letsencrypt.sh
+renew-ssl.sh

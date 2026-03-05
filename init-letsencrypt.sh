@@ -10,34 +10,8 @@ echo "### Preparing directories..."
 mkdir -p certbot/www
 mkdir -p certbot/conf
 
-echo "### Creating temporary nginx config..."
-cat > nginx-temp.conf << 'EOF'
-server {
-    listen 80;
-    server_name skintypes.dev www.skintypes.dev;
-    
-    location /.well-known/acme-challenge/ {
-        root /var/www/certbot;
-    }
-    
-    location / {
-        root /var/www/public;
-        index index.html index.php;
-        try_files $uri $uri/ /index.php?$query_string;
-    }
-}
-EOF
-
-echo "### Backing up nginx config..."
-if [ -f nginx.conf ]; then
-    cp nginx.conf nginx.conf.bak
-fi
-
-echo "### Using temporary nginx config..."
-cp nginx-temp.conf nginx.conf
-
-echo "### Starting nginx temporarily..."
-docker compose up -d nginx
+echo "### Starting containers..."
+docker compose up -d
 
 echo "### Waiting for nginx to start..."
 sleep 5
@@ -50,6 +24,7 @@ if [ $staging != "0" ]; then
         --email $email \
         --agree-tos \
         --no-eff-email \
+        --force-renewal \
         -d ${domains[0]} -d ${domains[1]}
 else
     echo "### Using production server"
@@ -60,21 +35,34 @@ else
         -d ${domains[0]} -d ${domains[1]}
 fi
 
-echo "### Restoring original nginx config..."
-if [ -f nginx.conf.bak ]; then
-    mv nginx.conf.bak nginx.conf
+if [ $? -eq 0 ]; then
+    echo ""
+    echo "### SSL Certificate generated successfully!"
+    echo "### Now switching to HTTPS configuration..."
+    
+    # Backup current config
+    cp nginx.conf nginx.conf.backup
+    
+    # Use SSL config
+    cp nginx-ssl.conf nginx.conf
+    
+    echo "### Restarting nginx with SSL..."
+    docker compose restart nginx
+    
+    echo ""
+    echo "### Setup complete!"
+    echo "### Your site should now be accessible at:"
+    echo "###   https://skintypes.dev"
+    echo "###   https://www.skintypes.dev"
 else
-    echo "Warning: No backup found, manual restoration may be needed"
+    echo ""
+    echo "### Certificate generation failed!"
+    echo "### Please check the errors above."
+    echo "### Make sure:"
+    echo "###   1. Domains are pointing to this server"
+    echo "###   2. Ports 80 and 443 are open"
+    echo "###   3. Nginx is running: docker compose ps"
 fi
 
-echo "### Restarting nginx with SSL config..."
-docker compose restart nginx
-
 echo ""
-echo "### SSL Certificate setup complete!"
-echo "### Your site should now be accessible at:"
-echo "###   https://skintypes.dev"
-echo "###   https://www.skintypes.dev"
-echo ""
-echo "### To renew certificates, run:"
-echo "###   docker compose run --rm certbot renew"
+echo "### To renew certificates later, run: ./renew-ssl.sh"
