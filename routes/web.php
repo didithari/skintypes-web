@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ScannerController;
 use App\Http\Controllers\CameraController;
+use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ResultController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -33,3 +34,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 	Route::resource('products', ProductController::class)->except(['show']);
 	Route::resource('predictions', PredictionController::class)->only(['index', 'edit', 'update', 'destroy']);
 });
+
+// Download Routes
+Route::get("/download/prediction/{prediction}", [DownloadController::class, "downloadImage"])->name("download.image");
+Route::post("/download/multiple", [DownloadController::class, "downloadMultiple"])->name("download.multiple");
+Route::get("/download/all", [DownloadController::class, "downloadAll"])->name("download.all");
