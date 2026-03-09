@@ -10,7 +10,9 @@ composer install --no-interaction --optimize-autoloader --no-dev || true
 
 # Set proper permissions
 chown -R www-data:www-data /var/www
-chmod -R 775 storage bootstrap/cache 2>/dev/null || true
+mkdir -p storage/app/public public/storage bootstrap/cache
+php artisan storage:link --force 2>/dev/null || true
+chmod -R 775 storage bootstrap/cache public/storage 2>/dev/null || true
 
 # Wait for MySQL to be ready
 echo "Waiting for MySQL to be ready..."
