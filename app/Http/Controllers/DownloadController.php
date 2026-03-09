@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Prediction;
 use Illuminate\Support\Facades\Storage;
-use ZipArchive;
+use Illuminate\Support\Facades\File;
 
 class DownloadController extends Controller
 {
@@ -41,11 +41,10 @@ class DownloadController extends Controller
             return abort(404, "Predictions not found");
         }
 
-        $tempZip = storage_path("app/temp_download_" . uniqid() . ".zip");
-        $zip = new ZipArchive;
-
-        if ($zip->open($tempZip, ZipArchive::CREATE) !== TRUE) {
-            return abort(500, "Could not create zip file");
+        $tempDir = storage_path("app/temp_zip_" . uniqid());
+        
+        if (!mkdir($tempDir, 0777, true) && !is_dir($tempDir)) {
+            return abort(500, "Could not create temporary directory");
         }
 
         foreach ($predictions as $prediction) {
@@ -60,17 +59,36 @@ class DownloadController extends Controller
             }
 
             $skinTypeFolder = strtolower(str_replace(" ", "-", $prediction->skinType->name ?? "unknown"));
-            $filename = pathinfo($prediction->image_path, PATHINFO_FILENAME);
-            $arcPath = "{$skinTypeFolder}/{$prediction->id}_{$filename}.jpg";
+            $skinTypePath = $tempDir . "/" . $skinTypeFolder;
+            
+            if (!is_dir($skinTypePath)) {
+                mkdir($skinTypePath, 0777, true);
+            }
 
-            $zip->addFile($fullPath, $arcPath);
+            $filename = pathinfo($prediction->image_path, PATHINFO_FILENAME);
+            $destFile = $skinTypePath . "/" . $prediction->id . "_" . $filename . ".jpg";
+            
+            copy($fullPath, $destFile);
         }
 
-        $zip->close();
-
-        $downloadName = "predictions_" . now()->format("Ymd_His") . ".zip";
+        $zipName = "predictions_" . now()->format("Ymd_His") . ".zip";
+        $zipPath = storage_path("app/" . $zipName);
         
-        return response()->download($tempZip, $downloadName)->deleteFileAfterSend(true);
+        $command = sprintf(
+            "cd %s && zip -r %s .",
+            escapeshellarg($tempDir),
+            escapeshellarg($zipPath)
+        );
+        
+        exec($command, $output, $returnCode);
+        
+        File::deleteDirectory($tempDir);
+
+        if ($returnCode !== 0 || !file_exists($zipPath)) {
+            return abort(500, "Could not create zip file. Return code: " . $returnCode);
+        }
+
+        return response()->download($zipPath, $zipName)->deleteFileAfterSend(true);
     }
 
     public function downloadAll()
@@ -81,11 +99,10 @@ class DownloadController extends Controller
             return abort(404, "No predictions found");
         }
 
-        $tempZip = storage_path("app/temp_download_all_" . uniqid() . ".zip");
-        $zip = new ZipArchive;
-
-        if ($zip->open($tempZip, ZipArchive::CREATE) !== TRUE) {
-            return abort(500, "Could not create zip file");
+        $tempDir = storage_path("app/temp_zip_all_" . uniqid());
+        
+        if (!mkdir($tempDir, 0777, true) && !is_dir($tempDir)) {
+            return abort(500, "Could not create temporary directory");
         }
 
         foreach ($predictions as $prediction) {
@@ -101,16 +118,35 @@ class DownloadController extends Controller
 
             $skinTypeFolder = strtolower(str_replace(" ", "-", $prediction->skinType->name ?? "unknown"));
             $dateFolder = optional($prediction->predicted_at ?? $prediction->created_at)->format("Y-m-d");
-            $filename = pathinfo($prediction->image_path, PATHINFO_FILENAME);
-            $arcPath = "{$skinTypeFolder}/{$dateFolder}/{$prediction->id}_{$filename}.jpg";
+            $targetPath = $tempDir . "/" . $skinTypeFolder . "/" . $dateFolder;
+            
+            if (!is_dir($targetPath)) {
+                mkdir($targetPath, 0777, true);
+            }
 
-            $zip->addFile($fullPath, $arcPath);
+            $filename = pathinfo($prediction->image_path, PATHINFO_FILENAME);
+            $destFile = $targetPath . "/" . $prediction->id . "_" . $filename . ".jpg";
+            
+            copy($fullPath, $destFile);
         }
 
-        $zip->close();
-
-        $downloadName = "all_predictions_" . now()->format("Ymd_His") . ".zip";
+        $zipName = "all_predictions_" . now()->format("Ymd_His") . ".zip";
+        $zipPath = storage_path("app/" . $zipName);
         
-        return response()->download($tempZip, $downloadName)->deleteFileAfterSend(true);
+        $command = sprintf(
+            "cd %s && zip -r %s .",
+            escapeshellarg($tempDir),
+            escapeshellarg($zipPath)
+        );
+        
+        exec($command, $output, $returnCode);
+        
+        File::deleteDirectory($tempDir);
+
+        if ($returnCode !== 0 || !file_exists($zipPath)) {
+            return abort(500, "Could not create zip file. Return code: " . $returnCode);
+        }
+
+        return response()->download($zipPath, $zipName)->deleteFileAfterSend(true);
     }
 }

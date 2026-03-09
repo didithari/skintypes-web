@@ -7,7 +7,10 @@
     <section class="card page-card">
         <div class="toolbar">
             <h2 class="page-title" style="margin:0;">Prediction Results</h2>
-            <span class="muted">Create dinonaktifkan untuk prediction</span>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <span class="muted">Create dinonaktifkan untuk prediction</span>
+                <a href="{{ route('download.all') }}" class="btn btn-success" title="Download semua foto" style="margin-left: auto;">⬇️ Download All</a>
+            </div>
         </div>
 
         <div class="table-wrap">
@@ -31,6 +34,7 @@
                             <td>
                                 <div class="actions">
                                     <button class="btn btn-info" onclick="viewImage('{{ asset('storage/' . $prediction->image_path) }}', '{{ $prediction->skinType->name ?? '-' }}', '{{ $prediction->confidence !== null ? number_format((float) $prediction->confidence * 100, 2) : 0 }}%', '{{ optional($prediction->predicted_at ?? $prediction->created_at)->format('d M Y H:i') }}')">Lihat Gambar</button>
+                                    <a class="btn btn-success" href="{{ route('download.image', $prediction) }}" title="Download foto">⬇️ Download</a>
                                     <a class="btn btn-secondary" href="{{ route('admin.predictions.edit', $prediction) }}">Edit</a>
                                     <form class="js-delete-form" data-delete-label="Prediction ini akan dihapus permanen." action="{{ route('admin.predictions.destroy', $prediction) }}" method="POST">
                                         @csrf
@@ -189,6 +193,24 @@
 
         .btn-info:hover {
             background: #1976D2;
+        }
+
+        .btn-success {
+            background: #4CAF50;
+            border-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+            padding: 8px 16px;
+            display: inline-block;
+            border-radius: 4px;
+            font-size: 13px;
+            transition: background 0.2s;
+            border: none;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
         }
 
         .actions {
