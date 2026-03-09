@@ -37,6 +37,7 @@ composer install --no-interaction --optimize-autoloader --no-dev || true
 # Set proper permissions
 chown -R www-data:www-data /var/www
 mkdir -p storage/app/public public/storage bootstrap/cache
+mkdir -p storage/app/public/skins storage/app/public/products
 php artisan storage:link --force 2>/dev/null || true
 chmod -R 775 storage bootstrap/cache public/storage 2>/dev/null || true
 
