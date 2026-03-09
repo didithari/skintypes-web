@@ -36,9 +36,13 @@ composer install --no-interaction --optimize-autoloader --no-dev || true
 
 # Set proper permissions
 chown -R www-data:www-data /var/www
-mkdir -p storage/app/public public/storage bootstrap/cache
+mkdir -p storage/app/public bootstrap/cache
 mkdir -p storage/app/public/skins storage/app/public/products
-php artisan storage:link --force 2>/dev/null || true
+
+# Create storage symlink properly
+rm -rf public/storage 2>/dev/null || true
+ln -s ../storage/app/public public/storage
+
 chmod -R 775 storage bootstrap/cache public/storage 2>/dev/null || true
 
 # Wait for MySQL to be ready
