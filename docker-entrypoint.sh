@@ -9,15 +9,16 @@ git config --global --add safe.directory /var/www || true
 composer install --no-interaction --optimize-autoloader --no-dev || true
 
 # Set proper permissions
-chown -R www-data:www-data /var/www
-mkdir -p storage/app/public bootstrap/cache
+mkdir -p storage/app/public bootstrap/cache storage/framework/cache storage/framework/sessions storage/framework/testing storage/logs
 mkdir -p storage/app/public/skins storage/app/public/products
 
 # Create storage symlink properly
 rm -rf public/storage 2>/dev/null || true
 ln -s ../storage/app/public public/storage
 
-chmod -R 775 storage bootstrap/cache public/storage 2>/dev/null || true
+# Fix all storage permissions
+chmod -R 777 storage bootstrap/cache public/storage 2>/dev/null || true
+chown -R www-data:www-data /var/www 2>/dev/null || true
 
 # Wait for MySQL to be ready
 echo "Waiting for MySQL to be ready..."
