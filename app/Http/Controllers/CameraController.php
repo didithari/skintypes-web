@@ -22,7 +22,37 @@ class CameraController extends Controller
 
         // Simpan foto dari camera
         $photo = $request->file('photo');
-        $path = $photo->store('skins', 'public');
+        
+        if (!$photo) {
+            \Log::error('Photo file is null', ['request_files' => $request->allFiles()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'File foto tidak valid'
+            ], 400);
+        }
+        
+        try {
+            $path = $photo->storePublicly('skins', 'public');
+            
+            if (!$path) {
+                \Log::error('Failed to store photo', ['photo' => $photo->getClientOriginalName()]);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menyimpan foto'
+                ], 500);
+            }
+            
+            \Log::info('Photo stored successfully', ['path' => $path, 'size' => $photo->getSize()]);
+        } catch (\Exception $e) {
+            \Log::error('Photo storage exception', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Error menyimpan foto: ' . $e->getMessage()
+            ], 500);
+        }
 
         try {
             // Kirim ke Flask API
