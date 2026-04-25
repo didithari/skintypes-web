@@ -25,12 +25,23 @@
 
         /* Navigation */
         nav {
-            background: #fff;
+            background: transparent;
             padding: 1rem 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
+            position: fixed;
+            width: 100%;
             top: 0;
+            left: 0;
             z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         nav .container {
@@ -76,10 +87,67 @@
             color: #A8C5B8;
         }
 
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+            color: #333;
+        }
+
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .mobile-menu-close {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            color: #333;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            text-align: center;
+        }
+
+        .mobile-nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
         /* Hero Section */
         .hero {
             background: #FAFAFA;
-            padding: 40px 0 100px;
+            padding: 90px 0 100px;
             position: relative;
             overflow: hidden;
         }
@@ -585,7 +653,7 @@
             }
 
             .hero {
-                padding: 60px 0;
+                padding: 120px 0 60px;
             }
 
             .hero .container {
@@ -606,6 +674,10 @@
                 padding: 15px 0;
             }
 
+            .hamburger {
+                display: block;
+            }
+
             .logo {
                 font-size: 1.2rem;
             }
@@ -620,7 +692,7 @@
             }
 
             .hero {
-                padding: 80px 0;
+                padding: 120px 0 80px;
             }
 
             .hero::before {
@@ -828,7 +900,7 @@
             }
 
             .hero {
-                padding: 30px 0;
+                padding: 90px 0 30px;
             }
 
             .hero-content h1 {
@@ -996,14 +1068,36 @@
                 <div class="logo-icon">S</div>
                 <span>SkinAI</span>
             </div>
+            <div class="hamburger" id="hamburger-menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </div>
             <ul>
                 <li><a href="#beranda">Beranda</a></li>
-                <li><a href="#tentang">Tentang</a></li>
                 <li><a href="#cara-kerja">Cara Kerja</a></li>
+                <li><a href="#tentang">Tentang</a></li>
                 <li><a href="#kontak">Kontak</a></li>
             </ul>
         </div>
     </nav>
+
+    <div class="mobile-menu-overlay" id="mobile-menu">
+        <div class="mobile-menu-close" id="mobile-menu-close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </div>
+        <ul class="mobile-nav-links">
+            <li><a href="#beranda" class="mobile-link">Beranda</a></li>
+            <li><a href="#cara-kerja" class="mobile-link">Cara Kerja</a></li>
+            <li><a href="#tentang" class="mobile-link">Tentang</a></li>
+            <li><a href="#kontak" class="mobile-link">Kontak</a></li>
+        </ul>
+    </div>
 
     <!-- Hero Section -->
     <section class="hero" id="beranda">
@@ -1230,5 +1324,40 @@
             </div>
         </div>
     </footer>
+    <script>
+        // Mobile Menu Toggle
+        const hamburger = document.getElementById('hamburger-menu');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenu = document.getElementById('mobile-menu-close');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        if (hamburger) {
+            hamburger.addEventListener('click', () => {
+                mobileMenu.classList.add('active');
+            });
+        }
+
+        if (closeMenu) {
+            closeMenu.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+            });
+        }
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+            });
+        });
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+    </script>
 </body>
 </html>
