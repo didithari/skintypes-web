@@ -486,7 +486,7 @@
 
         .footer-content {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
+            grid-template-columns: 2fr 1fr auto;
             gap: 3rem;
             margin-bottom: 3rem;
         }
@@ -1192,19 +1192,9 @@
                     <ul>
                         <li><a href="#">Analisis Kulit</a></li>
                         <li><a href="#">Rekomendasi</a></li>
-                        <li><a href="#">Konsultasi</a></li>
-                        <li><a href="#">Blog</a></li>
                     </ul>
                 </div>
-                <div class="footer-section">
-                    <h4>Perusahaan</h4>
-                    <ul>
-                        <li><a href="#">Tentang Kami</a></li>
-                        <li><a href="#">Karir</a></li>
-                        <li><a href="#">Kontak</a></li>
-                        <li><a href="#">Partnership</a></li>
-                    </ul>
-                </div>
+
                 <div class="footer-section">
                     <h4>Ikuti Kami</h4>
                     <div class="social-links">
