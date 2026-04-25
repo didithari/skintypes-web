@@ -78,22 +78,64 @@
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, #f5e6e8 0%, #e8d5d8 100%);
-            padding: 80px 0;
+            background: #FAFAFA;
+            padding: 40px 0 100px;
             position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: #FDF5F6;
+            border-radius: 50%;
+            bottom: -150px;
+            left: -100px;
+            z-index: 0;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: #F2F5F5;
+            border-radius: 50%;
+            top: 0px;
+            right: -100px;
+            z-index: 0;
         }
 
         .hero .container {
+            position: relative;
+            z-index: 1;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 60px;
             align-items: center;
         }
 
+        .hero-badge-top {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 25px;
+            font-weight: 500;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+
         .hero-content h1 {
-            font-size: 3rem;
-            line-height: 1.2;
-            margin-bottom: 1rem;
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: #1A1A2E;
         }
 
         .hero-content .highlight {
@@ -103,53 +145,74 @@
         .hero-content p {
             font-size: 1.1rem;
             color: #666;
-            margin-bottom: 2rem;
-            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+            max-width: 90%;
         }
 
         .hero-buttons {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
             margin-bottom: 2rem;
-        }
-
-        .btn {
-            padding: 15px 35px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            display: inline-flex;
             align-items: center;
-            gap: 10px;
         }
 
         .btn-primary {
             background: #A8C5B8;
             color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .btn-primary:hover {
             background: #8fb3a1;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(168, 197, 184, 0.3);
+            box-shadow: 0 5px 15px rgba(168, 197, 184, 0.4);
         }
 
-        .btn-secondary {
-            background: transparent;
+        .btn-demo {
+            background: white;
             color: #333;
-            border: 2px solid #ddd;
+            padding: 8px 25px 8px 8px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
-        .btn-secondary:hover {
-            border-color: #A8C5B8;
+        .btn-demo:hover {
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .play-icon {
+            width: 36px;
+            height: 36px;
+            background: #E8F4F0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: #A8C5B8;
         }
 
-        .hero-badge {
+        .play-icon svg {
+            width: 14px;
+            height: 14px;
+            margin-left: 2px;
+        }
+
+        .hero-badge-bottom {
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -157,63 +220,45 @@
             font-size: 0.95rem;
         }
 
-        .hero-badge svg {
+        .hero-badge-bottom .shield {
             width: 20px;
             height: 20px;
         }
 
         .hero-image {
-            position: relative;
             background: white;
-            border-radius: 30px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            padding: 20px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            max-width: 480px;
+            margin-left: auto;
+            position: relative;
+            z-index: 2;
         }
 
-        .hero-image img {
+        .image-wrapper {
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .image-wrapper img {
             width: 100%;
-            border-radius: 20px;
+            height: 460px;
+            object-fit: cover;
             display: block;
         }
 
-        .analysis-badge {
-            position: absolute;
-            top: 60px;
-            left: 40px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 12px 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.9rem;
-        }
-
-        .analysis-icon {
-            width: 30px;
-            height: 30px;
-            background: #A8C5B8;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .combination-badge {
-            position: absolute;
-            bottom: 60px;
-            right: 40px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 12px 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            font-weight: 600;
+        .image-footer {
+            height: 60px;
+            background: #E8F4F0;
+            width: 100%;
         }
 
         /* Steps Section */
         .steps {
-            padding: 80px 0;
+            padding: 100px 0;
             background: white;
             text-align: center;
         }
@@ -225,15 +270,19 @@
 
         .section-badge {
             display: inline-block;
+            background: #F8F9FA;
+            padding: 6px 16px;
+            border-radius: 20px;
             color: #A8C5B8;
-            font-weight: 600;
+            font-weight: 500;
             margin-bottom: 1rem;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
         }
 
         .section-title h2 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
+            color: #1A1A2E;
         }
 
         .section-title p {
@@ -241,88 +290,100 @@
             font-size: 1.1rem;
             max-width: 600px;
             margin: 0 auto;
+            line-height: 1.6;
         }
 
         .steps-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 3rem;
-            margin-top: 3rem;
+            margin-top: 4rem;
         }
 
         .step-card {
+            background: #F9FBFB;
+            border-radius: 24px;
+            padding: 40px 30px;
+            text-align: center;
             position: relative;
         }
 
         .step-number {
-            width: 60px;
-            height: 60px;
-            background: #e8f4f0;
-            color: #A8C5B8;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 36px;
+            height: 36px;
+            background: #A8C5B8;
+            color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
             font-weight: bold;
-            margin: 0 auto 1.5rem;
+            font-size: 1.1rem;
+            opacity: 0.4;
         }
 
         .step-icon {
             width: 80px;
             height: 80px;
-            background: #f5f5f5;
+            background: white;
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 1.5rem;
+            margin: 0 auto 20px;
             font-size: 2rem;
+            color: #A8C5B8;
         }
 
         .step-card h3 {
             font-size: 1.3rem;
             margin-bottom: 1rem;
+            color: #1A1A2E;
         }
 
         .step-card p {
             color: #666;
-            line-height: 1.8;
+            line-height: 1.6;
+            font-size: 0.95rem;
         }
 
         /* Features Section */
         .features {
-            padding: 80px 0;
-            background: linear-gradient(135deg, #f5e6e8 0%, #e8d5d8 100%);
+            padding: 100px 0;
+            background: #FDFBFB;
         }
 
         .features-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 2rem;
-            margin-top: 3rem;
+            margin-top: 4rem;
         }
 
         .feature-card {
             background: white;
             padding: 2.5rem;
-            border-radius: 20px;
+            border-radius: 24px;
             display: flex;
             gap: 1.5rem;
             align-items: flex-start;
             transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #F0F0F0;
         }
 
         .feature-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
 
         .feature-icon {
             width: 60px;
             height: 60px;
-            background: #e8f4f0;
-            border-radius: 15px;
+            background: #E8F4F0;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -331,64 +392,89 @@
         }
 
         .feature-icon.pink {
-            background: #fce8ec;
+            background: #FCE8EC;
         }
 
         .feature-content h3 {
             font-size: 1.3rem;
             margin-bottom: 0.8rem;
+            color: #1A1A2E;
         }
 
         .feature-content p {
             color: #666;
-            line-height: 1.8;
+            line-height: 1.6;
+            font-size: 0.95rem;
         }
 
         /* CTA Section */
         .cta {
-            padding: 80px 0;
+            padding: 100px 0;
             background: #C5D8C8;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -150px;
+            left: -100px;
+            z-index: 0;
+        }
+
+        .cta::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            bottom: -200px;
+            right: -100px;
+            z-index: 0;
+        }
+
+        .cta .container {
+            position: relative;
+            z-index: 1;
         }
 
         .cta h2 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
-            color: #333;
+            color: white;
         }
 
         .cta p {
             font-size: 1.1rem;
-            color: #555;
+            color: rgba(255, 255, 255, 0.9);
             margin-bottom: 2.5rem;
         }
 
-        .cta .btn {
+        .btn-white {
+            background: white;
+            color: #A8C5B8;
+            padding: 15px 35px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
             font-size: 1.1rem;
-            padding: 18px 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.3s;
         }
 
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 4rem;
-            margin-top: 3rem;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: #555;
-            font-size: 1rem;
+        .btn-white:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
         /* Footer */
@@ -534,12 +620,37 @@
             }
 
             .hero {
-                padding: 40px 0;
+                padding: 80px 0;
+            }
+
+            .hero::before {
+                width: 100%;
+                height: 100%;
+                border-radius: 0;
+                bottom: 0;
+                left: 0;
+                background: rgba(255, 255, 255, 0.45);
+                z-index: 1;
+            }
+
+            .hero::after {
+                display: none;
             }
 
             .hero .container {
+                position: static;
                 grid-template-columns: 1fr;
                 gap: 30px;
+                z-index: auto;
+            }
+
+            .hero-content {
+                position: relative;
+                z-index: 2;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
 
             .hero-content h1 {
@@ -549,6 +660,7 @@
 
             .hero-content p {
                 font-size: 1rem;
+                text-align: center;
             }
 
             .hero-buttons {
@@ -562,13 +674,32 @@
             }
 
             .hero-image {
-                padding: 20px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+                background: transparent;
+                box-shadow: none;
+                border-radius: 0;
+                z-index: 0;
             }
 
-            .analysis-badge,
-            .combination-badge {
-                padding: 10px 15px;
-                font-size: 0.85rem;
+            .image-wrapper {
+                height: 100%;
+                border-radius: 0;
+            }
+
+            .image-wrapper img {
+                height: 100%;
+                border-radius: 0;
+            }
+
+            .image-footer {
+                display: none;
             }
 
             .section-title {
@@ -710,21 +841,7 @@
                 font-size: 0.85rem;
             }
 
-            .hero-image {
-                padding: 15px;
-            }
 
-            .analysis-badge {
-                top: 40px;
-                left: 20px;
-            }
-
-            .combination-badge {
-                bottom: 40px;
-                right: 20px;
-                padding: 8px 12px;
-                font-size: 0.8rem;
-            }
 
             .section-title h2 {
                 font-size: 1.5rem;
@@ -876,32 +993,36 @@
     <section class="hero" id="beranda">
         <div class="container">
             <div class="hero-content">
+                <div class="hero-badge-top">
+                    ✨ AI-Powered Skincare Analysis
+                </div>
                 <h1>Kenali Jenis<br><span class="highlight">Kulit Wajahmu</span></h1>
                 <p>Analisis wajahmu dengan teknologi AI canggih untuk mendapatkan rekomendasi produk skincare yang tepat dan personal sesuai jenis kulitmu.</p>
                 <div class="hero-buttons">
-                    <a href="{{ route('scanner') }}" class="btn btn-primary">
-                        Coba Sekarang ➜
+                    <a href="{{ route('scanner') }}" class="btn-primary">
+                        Coba Sekarang ➔
                     </a>
-                    <a href="#" class="btn btn-secondary">
-                        ▶ Lihat Demo
+                    <a href="#" class="btn-demo">
+                        <div class="play-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                        </div>
+                        Lihat Demo
                     </a>
                 </div>
-                <div class="hero-badge">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <div class="hero-badge-bottom">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#A8C5B8" stroke-width="2" class="shield">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                     </svg>
                     <span>100% Aman & Private</span>
                 </div>
             </div>
             <div class="hero-image">
-                <div class="analysis-badge">
-                    <div class="analysis-icon">
-                        <svg viewBox="0 0 24 24" fill="white" width="16" height="16">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                        </svg>
-                    </div>
+                <div class="image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=500&h=600&fit=crop" alt="Woman touching face">
+                    <div class="image-footer"></div>
                 </div>
-                <img src="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=500&h=600&fit=crop" alt="Woman touching face">
             </div>
         </div>
     </section>
@@ -917,21 +1038,48 @@
             <div class="steps-grid">
                 <div class="step-card">
                     <div class="step-number">1</div>
-                    <div class="step-icon">📸</div>
+                    <div class="step-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#A8C5B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                    </div>
                     <h3>Foto Wajah</h3>
                     <p>Ambil foto wajahmu dengan pencahayaan yang baik atau upload foto yang sudah ada</p>
                 </div>
                 <div class="step-card">
                     <div class="step-number">2</div>
-                    <div class="step-icon">🤖</div>
+                    <div class="step-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#A8C5B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+                            <rect x="9" y="9" width="6" height="6"></rect>
+                            <line x1="9" y1="1" x2="9" y2="4"></line>
+                            <line x1="15" y1="1" x2="15" y2="4"></line>
+                            <line x1="9" y1="20" x2="9" y2="23"></line>
+                            <line x1="15" y1="20" x2="15" y2="23"></line>
+                            <line x1="20" y1="9" x2="23" y2="9"></line>
+                            <line x1="20" y1="14" x2="23" y2="14"></line>
+                            <line x1="1" y1="9" x2="4" y2="9"></line>
+                            <line x1="1" y1="14" x2="4" y2="14"></line>
+                        </svg>
+                    </div>
                     <h3>Analisis AI</h3>
-                    <p>Teknologi AI kami akan menganalisis kulit wajah dengan akurasi dan kecepatan maksimal</p>
+                    <p>Teknologi AI kami akan menganalisis jenis kulit, kondisi, dan kebutuhan perawatanmu</p>
                 </div>
                 <div class="step-card">
                     <div class="step-number">3</div>
-                    <div class="step-icon">✨</div>
+                    <div class="step-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#A8C5B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="7" y="10" width="10" height="12" rx="2"></rect>
+                            <path d="M12 10V6"></path>
+                            <path d="M12 6H9"></path>
+                            <path d="M10 3h4"></path>
+                            <path d="M18 5v1m-.5-.5h1"></path>
+                            <path d="M20 9v1m-.5-.5h1"></path>
+                        </svg>
+                    </div>
                     <h3>Rekomendasi Skincare</h3>
-                    <p>Dapatkan rekomendasi produk skincare yang tepat dan personal untuk kulit kamu</p>
+                    <p>Dapatkan rekomendasi produk skincare yang tepat dan personal untuk kulitmu</p>
                 </div>
             </div>
         </div>
@@ -946,31 +1094,57 @@
             </div>
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">🚀</div>
+                    <div class="feature-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A8C5B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"/>
+                            <path d="m14 7 3 3"/>
+                            <path d="M5 6v4"/>
+                            <path d="M19 14v4"/>
+                            <path d="M10 2v2"/>
+                            <path d="M7 8H3"/>
+                            <path d="M21 16h-4"/>
+                            <path d="M11 3H9"/>
+                        </svg>
+                    </div>
                     <div class="feature-content">
                         <h3>AI Teknologi Terkini</h3>
-                        <p>Menggunakan machine learning dan deep learning yang presisi dan akurat</p>
+                        <p>Menggunakan machine learning dan deep learning untuk analisis yang presisi dan akurat</p>
                     </div>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon pink">🔒</div>
+                    <div class="feature-icon pink">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D28F9E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M22 11c0 4.5-3 8-5 10-2-2-5-5.5-5-10V7l5-2 5 2Z"/>
+                        </svg>
+                    </div>
                     <div class="feature-content">
                         <h3>Privasi Terjamin</h3>
-                        <p>Data dan foto wajahmu aman, tidak disimpan dan tidak digunakan untuk database</p>
+                        <p>Data dan foto wajahmu aman, tidak disimpan, dan hanya digunakan untuk analisis</p>
                     </div>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
+                    <div class="feature-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A8C5B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                    </div>
                     <div class="feature-content">
                         <h3>Hasil Instan</h3>
                         <p>Dapatkan hasil analisis dan rekomendasi hanya dalam hitungan detik</p>
                     </div>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon pink">💝</div>
+                    <div class="feature-icon pink">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D28F9E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                        </svg>
+                    </div>
                     <div class="feature-content">
                         <h3>Rekomendasi Personal</h3>
-                        <p>Produk skincare yang direkomendasikan sesuai dengan kondisi kulit kamu</p>
+                        <p>Produk skincare yang direkomendasikan sesuai dengan kondisi kulit unikmu</p>
                     </div>
                 </div>
             </div>
@@ -982,21 +1156,7 @@
         <div class="container">
             <h2>Siap Menemukan Skincare yang Tepat?</h2>
             <p>Mulai perjalanan skincare-mu sekarang dan dapatkan kulit sehat yang kamu impikan</p>
-            <a href="{{ route('scanner') }}" class="btn btn-primary">Coba Sekarang Gratis ➜</a>
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-value">50K+</div>
-                    <div class="stat-label">Pengguna</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">98%</div>
-                    <div class="stat-label">Akurasi</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">4.9/5</div>
-                    <div class="stat-label">Rating</div>
-                </div>
-            </div>
+            <a href="{{ route('scanner') }}" class="btn-white">Coba Sekarang Gratis ➔</a>
         </div>
     </section>
 
