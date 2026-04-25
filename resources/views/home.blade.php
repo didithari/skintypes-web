@@ -719,8 +719,24 @@
             }
 
             .steps-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
+                display: flex;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                gap: 15px;
+                padding-bottom: 20px;
+                margin: 0 -15px;
+                padding: 0 15px 20px 15px;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+
+            .steps-grid::-webkit-scrollbar {
+                display: none;
+            }
+
+            .step-card {
+                flex: 0 0 85%;
+                scroll-snap-align: center;
             }
 
             .step-card h3 {
