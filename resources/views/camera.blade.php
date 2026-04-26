@@ -675,6 +675,7 @@
         let faceStableFrames = 0;
         const heuristicCanvas = document.createElement('canvas');
         const heuristicCtx = heuristicCanvas.getContext('2d', { willReadFrequently: true });
+        const isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
         const MEDIA_PIPE_FACE_BASE = "{{ asset('vendor/mediapipe/face_detection') }}";
         const MEDIA_PIPE_FACE_SCRIPT_URL = "{{ asset('vendor/mediapipe/face_detection/face_detection.js') }}";
         const MEDIA_PIPE_CAMERA_UTILS_URL = "{{ asset('vendor/mediapipe/camera_utils/camera_utils.js') }}";
@@ -801,8 +802,16 @@
         }
 
         function initFaceDetection() {
-            if (!('FaceDetector' in window)) {
+            if (isMobileDevice) {
                 initMediaPipeFaceDetection();
+            } else {
+                initNativeFaceDetection();
+            }
+        }
+
+        function initNativeFaceDetection() {
+            if (!('FaceDetector' in window)) {
+                initHeuristicFaceDetection();
                 return;
             }
 
@@ -1024,7 +1033,7 @@
 
                 mediaPipeDetector.setOptions({
                     model: 'short',
-                    minDetectionConfidence: 0.45
+                    minDetectionConfidence: isMobileDevice ? 0.45 : 0.35
                 });
 
                 mediaPipeLastResultAt = Date.now();
@@ -1088,8 +1097,13 @@
                 }, 4000);
             } catch (error) {
                 console.error('Fallback face detection error:', error);
-                initHeuristicFaceDetection();
-                showStatus('⚠ Mode lokal aktif: validasi wajah sederhana');
+                if ('FaceDetector' in window) {
+                    initNativeFaceDetection();
+                    showStatus('⚠ MediaPipe gagal, pakai engine native');
+                } else {
+                    initHeuristicFaceDetection();
+                    showStatus('⚠ Mode lokal aktif: validasi wajah sederhana');
+                }
             }
         }
 
