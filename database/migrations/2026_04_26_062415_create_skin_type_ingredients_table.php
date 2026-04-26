@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('skin_type_ingredients', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('skin_type_id')->constrained()->onDelete('cascade');
-            $table->enum('type', ['good', 'bad']);
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('skin_type_ingredients')) {
+            Schema::create('skin_type_ingredients', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('skin_type_id')->constrained()->onDelete('cascade');
+                $table->enum('type', ['good', 'bad']);
+                $table->string('name');
+                $table->text('description')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**
