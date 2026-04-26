@@ -17,6 +17,8 @@ class Prediction extends Model
         'image_path',
         'confidence',
         'predicted_at',
+        'is_skin_type_correct',
+        'expected_skin',
     ];
 
     protected function casts(): array

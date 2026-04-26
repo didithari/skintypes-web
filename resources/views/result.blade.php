@@ -32,11 +32,12 @@
             display: inline-block;
             background: rgba(129, 199, 132, 0.2);
             color: #2e7d32;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            margin-bottom: 20px;
-            font-weight: 500;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-size: 20px;
+            margin-bottom: 24px;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(129, 199, 132, 0.3);
         }
 
         .main-title {
@@ -570,7 +571,7 @@
         <!-- Header -->
         <div class="header">
             <div class="skin-type-badge">
-                🌿 Skin Type: {{ ucfirst($prediction->skinType->name) }}
+                🌿 Tipe Kulit: {{ ucfirst($prediction->skinType->name) }}
             </div>
             <h1 class="main-title">Rekomendasi Skincare Untuk Kamu</h1>
             <p class="subtitle">Berdasarkan hasil analisis kulit wajah</p>
@@ -699,7 +700,7 @@
             <h2 class="research-popup-title">Bantu Riset Skripsi Saya? 🙏</h2>
             <p class="research-popup-desc">Hanya butuh 1 menit untuk menjawab beberapa pertanyaan singkat. Bantuanmu sangat berharga!</p>
             <div class="research-popup-actions">
-                <a href="{{ route('questionnaire') }}" class="btn-boleh">Boleh, bantu isi</a>
+                <a href="{{ route('questionnaire', ['prediction' => $prediction->id]) }}" class="btn-boleh">Boleh, bantu isi</a>
                 <button class="btn-nanti" onclick="closeResearchPopup()">Mungkin nanti</button>
             </div>
         </div>
@@ -778,7 +779,7 @@
             // Trigger reflow
             void popup.offsetWidth;
             popup.classList.add('show');
-        }, 5000);
+        }, 10000);
 
         function closeResearchPopup() {
             const popup = document.getElementById('researchPopup');

@@ -200,7 +200,7 @@
         <h1>Kuisioner Riset</h1>
         <p class="subtitle">Bantu validasi hasil ini agar riset skripsi saya makin akurat:</p>
 
-        <form action="{{ route('questionnaire.submit') }}" method="POST" id="questionnaireForm">
+        <form action="{{ route('questionnaire.submit', ['prediction' => $prediction->id]) }}" method="POST" id="questionnaireForm">
             @csrf
             
             <div class="question-group">
@@ -237,13 +237,18 @@
                 <div class="question-text">3. Apakah jenis kulit yang terdeteksi sesuai dengan kondisi yang Anda rasakan selama ini?</div>
                 <div class="options-yes-no">
                     <label class="option-label">
-                        <input type="radio" name="q3" value="iya" required>
+                        <input type="radio" name="q3" value="iya" required onchange="toggleExpectedSkin(false)">
                         <span class="option-box">Iya</span>
                     </label>
                     <label class="option-label">
-                        <input type="radio" name="q3" value="tidak" required>
+                        <input type="radio" name="q3" value="tidak" required onchange="toggleExpectedSkin(true)">
                         <span class="option-box">Tidak</span>
                     </label>
+                </div>
+                
+                <div id="expectedSkinContainer" style="display: none; margin-top: 15px;">
+                    <div class="question-text" style="font-size: 14px;">Lalu, apa tipe kulit kamu yang sebenarnya?</div>
+                    <input type="text" name="expected_skin" id="expectedSkinInput" placeholder="Contoh: Berminyak, Kering, dll" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; outline: none; transition: border-color 0.2s;">
                 </div>
             </div>
 
@@ -313,5 +318,27 @@
             <button type="submit" class="submit-btn" id="submitBtn">Kirim Jawaban</button>
         </form>
     </div>
+    <script>
+        function toggleExpectedSkin(show) {
+            const container = document.getElementById('expectedSkinContainer');
+            const input = document.getElementById('expectedSkinInput');
+            if (show) {
+                container.style.display = 'block';
+                input.required = true;
+            } else {
+                container.style.display = 'none';
+                input.required = false;
+                input.value = ''; // Kosongkan data jika jawabannya iya
+            }
+        }
+        
+        // Add focus effect for input
+        document.getElementById('expectedSkinInput').addEventListener('focus', function() {
+            this.style.borderColor = '#81c784';
+        });
+        document.getElementById('expectedSkinInput').addEventListener('blur', function() {
+            this.style.borderColor = '#e0e0e0';
+        });
+    </script>
 </body>
 </html>

@@ -20,8 +20,17 @@ Route::post('/camera/predict', [CameraController::class, 'predict'])->name('came
 Route::get('/result/{prediction}', [ResultController::class, 'show'])->name('result');
 
 // Questionnaire Route
-Route::view('/questionnaire', 'questionnaire')->name('questionnaire');
-Route::post('/questionnaire', function() {
+Route::get('/questionnaire/{prediction}', function(\App\Models\Prediction $prediction) {
+    return view('questionnaire', compact('prediction'));
+})->name('questionnaire');
+
+Route::post('/questionnaire/{prediction}', function(\Illuminate\Http\Request $request, \App\Models\Prediction $prediction) {
+    // Process the data for the requested 1 question and additional expected_skin
+    $prediction->update([
+        'is_skin_type_correct' => $request->input('q3') === 'iya' ? true : false,
+        'expected_skin' => $request->input('expected_skin'),
+    ]);
+    
     return redirect()->route('home')->with('message', 'Terima kasih atas partisipasi Anda dalam riset ini!');
 })->name('questionnaire.submit');
 
