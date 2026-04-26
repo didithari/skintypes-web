@@ -445,7 +445,7 @@
             }
 
             .scanner-section {
-                padding: 50px 0;
+                padding: 120px 0 60px;
             }
 
             .content-wrapper {
@@ -486,7 +486,7 @@
             }
 
             .scanner-section {
-                padding: 40px 0;
+                padding: 130px 0 50px;
             }
 
             .section-title h1 {
@@ -564,7 +564,7 @@
             }
 
             .scanner-section {
-                padding: 30px 0;
+                padding: 130px 0 40px;
             }
 
             .section-title {
