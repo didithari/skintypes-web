@@ -1223,15 +1223,13 @@
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon pink">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D28F9E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                            <path d="M22 11c0 4.5-3 8-5 10-2-2-5-5.5-5-10V7l5-2 5 2Z"/>
+                        <svg width="28" height="28" fill="none" stroke="#D28F9E" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                         </svg>
                     </div>
                     <div class="feature-content">
-                        <h3>Privasi Terjamin</h3>
-                        <p>Data dan foto wajahmu aman, tidak disimpan, dan hanya digunakan untuk analisis</p>
+                        <h3>Inklusif (Untuk Siapa Saja)</h3>
+                        <p>Dirancang untuk mampu menganalisis berbagai karakteristik dan permasalahan kulit, baik bagi pria maupun wanita.</p>
                     </div>
                 </div>
                 <div class="feature-card">

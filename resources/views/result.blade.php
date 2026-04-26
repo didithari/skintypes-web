@@ -678,7 +678,7 @@
             // Trigger reflow
             void popup.offsetWidth;
             popup.classList.add('show');
-        }, 10000);
+        }, 15000);
 
         function closeResearchPopup() {
             const popup = document.getElementById('researchPopup');
