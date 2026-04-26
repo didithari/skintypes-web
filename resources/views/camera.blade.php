@@ -779,13 +779,26 @@
 
             const centerX = offsetX + (box.x + box.width / 2) * scale;
             const centerY = offsetY + (box.y + box.height / 2) * scale;
-            const framePadding = 20;
+            const framePaddingX = isMobileDevice ? 16 : 20;
+            const framePaddingTop = isMobileDevice ? 26 : 22;
+            const framePaddingBottom = isMobileDevice ? 18 : 16;
 
-            const inFrame =
-                centerX >= frameRect.left + framePadding &&
-                centerX <= frameRect.right - framePadding &&
-                centerY >= frameRect.top + framePadding &&
-                centerY <= frameRect.bottom - framePadding;
+            const faceLeft = offsetX + box.x * scale;
+            const faceTop = offsetY + box.y * scale;
+            const faceRight = faceLeft + box.width * scale;
+            const faceBottom = faceTop + box.height * scale;
+
+            const fullyInsideFrame =
+                faceLeft >= frameRect.left + framePaddingX &&
+                faceRight <= frameRect.right - framePaddingX &&
+                faceTop >= frameRect.top + framePaddingTop &&
+                faceBottom <= frameRect.bottom - framePaddingBottom;
+
+            const frameCenterX = (frameRect.left + frameRect.right) / 2;
+            const frameCenterY = (frameRect.top + frameRect.bottom) / 2;
+            const normalizedDx = Math.abs(centerX - frameCenterX) / (frameRect.width / 2);
+            const normalizedDy = Math.abs(centerY - frameCenterY) / (frameRect.height / 2);
+            const centerAligned = normalizedDx <= (isMobileDevice ? 0.33 : 0.28) && normalizedDy <= (isMobileDevice ? 0.36 : 0.3);
 
             const faceWidthRatio = box.width / video.videoWidth;
             const faceHeightRatio = box.height / video.videoHeight;
@@ -794,10 +807,10 @@
             const maxFaceHeightRatio = isMobileDevice ? 0.95 : 0.85;
             const faceSizeOk = faceWidthRatio >= minFaceRatio && faceWidthRatio <= maxFaceWidthRatio && faceHeightRatio >= minFaceRatio && faceHeightRatio <= maxFaceHeightRatio;
 
-            if (inFrame && faceSizeOk) {
+            if (fullyInsideFrame && centerAligned && faceSizeOk) {
                 updateCaptureState(true, 'Wajah terdeteksi, siap difoto');
             } else {
-                updateCaptureState(false, 'Posisikan wajah pas di dalam frame');
+                updateCaptureState(false, 'Geser wajah agar pas di tengah oval frame');
             }
         }
 
