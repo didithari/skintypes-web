@@ -1154,7 +1154,7 @@
                     clearInterval(countInterval);
                     countdown.classList.remove('show');
                     
-                    // Crop berdasarkan posisi wajah agar konsisten mobile/desktop
+                    // Take screenshot with center-crop 1:1, output tetap 640x640
                     const canvas = document.createElement('canvas');
                     const OUTPUT_SIZE = 640;
                     canvas.width = OUTPUT_SIZE;
@@ -1162,30 +1162,10 @@
 
                     const srcW = video.videoWidth;
                     const srcH = video.videoHeight;
-                    let sourceX, sourceY, cropSize;
-
-                    if (lastFaceBox) {
-                        // Crop di sekitar wajah dengan padding 60%
-                        const fb = lastFaceBox;
-                        const faceCX = fb.x + fb.width / 2;
-                        const faceCY = fb.y + fb.height / 2;
-                        const faceSize = Math.max(fb.width, fb.height);
-                        cropSize = faceSize * 2.2; // wajah ~45% dari output
-                        cropSize = Math.max(cropSize, 300); // minimal 300px
-                        cropSize = Math.min(cropSize, Math.min(srcW, srcH)); // jangan melebihi video
-
-                        sourceX = faceCX - cropSize / 2;
-                        sourceY = faceCY - cropSize / 2;
-
-                        // Clamp agar tidak keluar batas video
-                        sourceX = Math.max(0, Math.min(sourceX, srcW - cropSize));
-                        sourceY = Math.max(0, Math.min(sourceY, srcH - cropSize));
-                    } else {
-                        // Fallback: center crop
-                        cropSize = Math.min(srcW, srcH);
-                        sourceX = (srcW - cropSize) / 2;
-                        sourceY = (srcH - cropSize) / 2;
-                    }
+                    
+                    const cropSize = Math.min(srcW, srcH);
+                    const sourceX = (srcW - cropSize) / 2;
+                    const sourceY = (srcH - cropSize) / 2;
 
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(
