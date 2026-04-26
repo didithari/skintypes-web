@@ -293,6 +293,10 @@
                         <input type="radio" name="q3" value="tidak" required onchange="toggleExpectedSkin(true)">
                         <span class="option-box">Tidak</span>
                     </label>
+                    <label class="option-label">
+                        <input type="radio" name="q3" value="tidak_tahu" required onchange="toggleExpectedSkin(false)">
+                        <span class="option-box">Tidak tahu</span>
+                    </label>
                 </div>
                 
                 <div id="expectedSkinContainer" style="display: none; margin-top: 15px;">
