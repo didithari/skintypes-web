@@ -673,6 +673,7 @@
         let faceStableFrames = 0;
         const heuristicCanvas = document.createElement('canvas');
         const heuristicCtx = heuristicCanvas.getContext('2d', { willReadFrequently: true });
+        const MEDIA_PIPE_BASE = '/vendor/mediapipe';
 
         // Initialize camera
         async function initCamera() {
@@ -792,7 +793,7 @@
 
         function initFaceDetection() {
             if (!('FaceDetector' in window)) {
-                initHeuristicFaceDetection();
+                initMediaPipeFaceDetection();
                 return;
             }
 
@@ -998,13 +999,13 @@
                 updateCaptureState(false, 'Memuat deteksi wajah...');
 
                 if (!mediaPipeLoaded) {
-                    await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/face_detection.js');
-                    await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js');
+                    await loadScript(`${MEDIA_PIPE_BASE}/face_detection/face_detection.js`);
+                    await loadScript(`${MEDIA_PIPE_BASE}/camera_utils/camera_utils.js`);
                     mediaPipeLoaded = true;
                 }
 
                 mediaPipeDetector = new FaceDetection.FaceDetection({
-                    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`
+                    locateFile: (file) => `${MEDIA_PIPE_BASE}/face_detection/${file}`
                 });
 
                 mediaPipeDetector.setOptions({
