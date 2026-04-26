@@ -1106,7 +1106,7 @@
                     clearInterval(countInterval);
                     countdown.classList.remove('show');
                     
-                    // Take screenshot with center-crop 1:1
+                    // Take screenshot with center-crop 1:1, output tetap 640x640
                     const canvas = document.createElement('canvas');
                     const sourceWidth = video.videoWidth;
                     const sourceHeight = video.videoHeight;
@@ -1114,8 +1114,9 @@
                     const sourceX = (sourceWidth - cropSize) / 2;
                     const sourceY = (sourceHeight - cropSize) / 2;
 
-                    canvas.width = cropSize;
-                    canvas.height = cropSize;
+                    const OUTPUT_SIZE = 640;
+                    canvas.width = OUTPUT_SIZE;
+                    canvas.height = OUTPUT_SIZE;
 
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(
@@ -1126,8 +1127,8 @@
                         cropSize,
                         0,
                         0,
-                        cropSize,
-                        cropSize
+                        OUTPUT_SIZE,
+                        OUTPUT_SIZE
                     );
 
                     // Convert to blob and send to server
