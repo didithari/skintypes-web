@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             SkinTypeSeeder::class,
             ProductSeeder::class,
             PredictionSeeder::class,
+            SkinTypeIngredientSeeder::class,
         ]);
     }
 }

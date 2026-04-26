@@ -477,6 +477,47 @@
             <p class="subtitle">Berdasarkan hasil analisis kulit wajah</p>
         </div>
 
+        <!-- Ingredients Info -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 40px;">
+            <!-- Recommended Ingredients -->
+            <div style="background: white; border-radius: 16px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid #81c784;">
+                <h3 style="display: flex; align-items: center; gap: 8px; color: #2e7d32; font-size: 18px; margin-bottom: 15px;">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Kandungan Disarankan
+                </h3>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    @foreach($prediction->skinType->ingredients->where('type', 'good') as $ing)
+                        <li style="margin-bottom: 12px; border-bottom: 1px solid #f9f9f9; padding-bottom: 12px;">
+                            <strong style="color: #2c3e50; display: block; font-size: 15px; margin-bottom: 4px;">{{ $ing->name }}</strong>
+                            <span style="color: #7f8c8d; font-size: 13.5px; line-height: 1.5; display: block;">{{ $ing->description }}</span>
+                        </li>
+                    @endforeach
+                    @if($prediction->skinType->ingredients->where('type', 'good')->isEmpty())
+                        <li style="color: #7f8c8d; font-size: 14px; font-style: italic;">Belum ada data kandungan.</li>
+                    @endif
+                </ul>
+            </div>
+
+            <!-- Avoid Ingredients -->
+            <div style="background: white; border-radius: 16px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid #e57373;">
+                <h3 style="display: flex; align-items: center; gap: 8px; color: #c62828; font-size: 18px; margin-bottom: 15px;">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    Sebaiknya Dihindari
+                </h3>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    @foreach($prediction->skinType->ingredients->where('type', 'bad') as $ing)
+                        <li style="margin-bottom: 12px; border-bottom: 1px solid #f9f9f9; padding-bottom: 12px;">
+                            <strong style="color: #2c3e50; display: block; font-size: 15px; margin-bottom: 4px;">{{ $ing->name }}</strong>
+                            <span style="color: #7f8c8d; font-size: 13.5px; line-height: 1.5; display: block;">{{ $ing->description }}</span>
+                        </li>
+                    @endforeach
+                    @if($prediction->skinType->ingredients->where('type', 'bad')->isEmpty())
+                        <li style="color: #7f8c8d; font-size: 14px; font-style: italic;">Belum ada data kandungan.</li>
+                    @endif
+                </ul>
+            </div>
+        </div>
+
         <!-- Products Grid -->
         @if($products->count() > 0)
             <div class="products-grid">

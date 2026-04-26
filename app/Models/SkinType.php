@@ -67,4 +67,9 @@ class SkinType extends Model
     {
         return $this->hasMany(Prediction::class);
     }
+
+    public function ingredients(): HasMany
+    {
+        return $this->hasMany(SkinTypeIngredient::class);
+    }
 }
