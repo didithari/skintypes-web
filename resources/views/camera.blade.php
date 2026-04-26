@@ -80,27 +80,6 @@
             background: rgba(50, 196, 126, 0.9);
         }
 
-        /* Face outline - oval shape */
-        .face-oval {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 3px solid rgba(50, 196, 126, 0.6);
-            border-radius: 50% 50% 45% 45%;
-            top: 0;
-            left: 0;
-        }
-
-        /* Inner glow */
-        .face-oval::before {
-            content: '';
-            position: absolute;
-            inset: -10px;
-            border: 2px solid rgba(50, 196, 126, 0.3);
-            border-radius: 50% 50% 45% 45%;
-            animation: pulse 2s infinite;
-        }
-
         .face-target-zone {
             position: absolute;
             left: 12%;
@@ -497,6 +476,63 @@
             background: #28a66d;
         }
 
+        /* Desktop Overlay */
+        .desktop-overlay {
+            position: absolute;
+            inset: 0;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .desktop-overlay.show {
+            display: flex;
+        }
+
+        .desktop-overlay h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .desktop-overlay p {
+            color: #ccc;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            max-width: 320px;
+        }
+
+        .desktop-overlay img {
+            width: 200px;
+            height: 200px;
+            border-radius: 12px;
+            background: white;
+            padding: 10px;
+            margin-bottom: 25px;
+        }
+
+        .desktop-overlay .back-btn-desktop {
+            background: #333;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .desktop-overlay .back-btn-desktop:hover {
+            background: #444;
+        }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .back-btn {
@@ -682,12 +718,11 @@
             <div class="camera-overlay">
                 <!-- Face Frame -->
                 <div class="face-frame">
-                    <div class="face-oval"></div>
                     <div class="face-target-zone"></div>
                     <div class="target-line eye-line"></div>
                     <div class="target-line chin-line"></div>
                     <div class="target-label top">Posisi alis digaris ini</div>
-                    <div class="target-label bottom">Pastikan hidung diatas garis ini</div>
+                    <div class="target-label bottom">Posisi mulut didekat garis ini</div>
                     
                     <!-- Alignment Points -->
                     <div class="alignment-point eye-left"></div>
@@ -743,6 +778,14 @@
                 <p>Silakan izinkan akses kamera di pengaturan browser Anda untuk melanjutkan</p>
                 <button class="retry-btn" onclick="retryCamera()">Coba Lagi</button>
             </div>
+
+            <!-- Desktop Overlay -->
+            <div class="desktop-overlay" id="desktopOverlay">
+                <h2>Gunakan HP Anda</h2>
+                <p>Fitur kamera ini dioptimalkan untuk perangkat mobile. Silakan scan QR code di bawah ini menggunakan HP Anda untuk melanjutkan.</p>
+                <img id="qrcode" src="" alt="QR Code">
+                <button class="back-btn-desktop" onclick="goBack()">Kembali</button>
+            </div>
         </div>
     </div>
 
@@ -767,6 +810,7 @@
         let mediaPipeLastResultAt = 0;
         let isFaceAligned = false;
         let lastAlignedAt = 0;
+        let lastFaceBox = null;
         const mediaPipeInputCanvas = document.createElement('canvas');
         const mediaPipeInputCtx = mediaPipeInputCanvas.getContext('2d', { willReadFrequently: false });
         const isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
@@ -776,6 +820,13 @@
 
         // Initialize camera
         async function initCamera() {
+            if (!isMobileDevice) {
+                document.getElementById('desktopOverlay').classList.add('show');
+                const currentUrl = encodeURIComponent(window.location.href);
+                document.getElementById('qrcode').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${currentUrl}`;
+                return;
+            }
+
             try {
                 shutterBtn.disabled = true;
                 stopFaceDetection();
@@ -855,20 +906,17 @@
         }
 
         function evaluateFaceBox(box, detectorType = 'generic') {
-            // Cukup cek: ada wajah & posisi vertikal sekitar tengah video
             const faceCenterY = (box.y + box.height / 2) / video.videoHeight;
             const faceCenterX = (box.x + box.width / 2) / video.videoWidth;
 
-            // Wajah di sekitar tengah vertikal (15%–85% tinggi video)
-            // dan sekitar tengah horizontal (10%–90% lebar video)
             const inVerticalCenter = faceCenterY >= 0.15 && faceCenterY <= 0.85;
             const inHorizontalRange = faceCenterX >= 0.10 && faceCenterX <= 0.90;
 
-            // Ukuran wajah minimal (lebih dari 3% lebar video)
             const faceWidthRatio = box.width / video.videoWidth;
             const faceBigEnough = faceWidthRatio >= 0.03;
 
             if (inVerticalCenter && inHorizontalRange && faceBigEnough) {
+                lastFaceBox = { ...box };
                 updateCaptureState(true, 'Wajah terdeteksi ✓ Siap difoto');
             } else {
                 updateCaptureState(false, 'Arahkan wajah ke area tengah frame');
@@ -1106,29 +1154,44 @@
                     clearInterval(countInterval);
                     countdown.classList.remove('show');
                     
-                    // Take screenshot with center-crop 1:1, output tetap 640x640
+                    // Crop berdasarkan posisi wajah agar konsisten mobile/desktop
                     const canvas = document.createElement('canvas');
-                    const sourceWidth = video.videoWidth;
-                    const sourceHeight = video.videoHeight;
-                    const cropSize = Math.min(sourceWidth, sourceHeight);
-                    const sourceX = (sourceWidth - cropSize) / 2;
-                    const sourceY = (sourceHeight - cropSize) / 2;
-
                     const OUTPUT_SIZE = 640;
                     canvas.width = OUTPUT_SIZE;
                     canvas.height = OUTPUT_SIZE;
 
+                    const srcW = video.videoWidth;
+                    const srcH = video.videoHeight;
+                    let sourceX, sourceY, cropSize;
+
+                    if (lastFaceBox) {
+                        // Crop di sekitar wajah dengan padding 60%
+                        const fb = lastFaceBox;
+                        const faceCX = fb.x + fb.width / 2;
+                        const faceCY = fb.y + fb.height / 2;
+                        const faceSize = Math.max(fb.width, fb.height);
+                        cropSize = faceSize * 2.2; // wajah ~45% dari output
+                        cropSize = Math.max(cropSize, 300); // minimal 300px
+                        cropSize = Math.min(cropSize, Math.min(srcW, srcH)); // jangan melebihi video
+
+                        sourceX = faceCX - cropSize / 2;
+                        sourceY = faceCY - cropSize / 2;
+
+                        // Clamp agar tidak keluar batas video
+                        sourceX = Math.max(0, Math.min(sourceX, srcW - cropSize));
+                        sourceY = Math.max(0, Math.min(sourceY, srcH - cropSize));
+                    } else {
+                        // Fallback: center crop
+                        cropSize = Math.min(srcW, srcH);
+                        sourceX = (srcW - cropSize) / 2;
+                        sourceY = (srcH - cropSize) / 2;
+                    }
+
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(
                         video,
-                        sourceX,
-                        sourceY,
-                        cropSize,
-                        cropSize,
-                        0,
-                        0,
-                        OUTPUT_SIZE,
-                        OUTPUT_SIZE
+                        sourceX, sourceY, cropSize, cropSize,
+                        0, 0, OUTPUT_SIZE, OUTPUT_SIZE
                     );
 
                     // Convert to blob and send to server
