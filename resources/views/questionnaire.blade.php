@@ -179,6 +179,55 @@
         .back-link:hover {
             color: #2c3e50;
         }
+
+        .thank-you-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(3px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .thank-you-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .thank-you-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .thank-you-overlay.show .thank-you-content {
+            transform: translateY(0);
+        }
+
+        .thank-you-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .thank-you-desc {
+            font-size: 15px;
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            font-style: italic;
+        }
         
         @media (max-width: 600px) {
             .container {
@@ -318,6 +367,17 @@
             <button type="submit" class="submit-btn" id="submitBtn">Kirim Jawaban</button>
         </form>
     </div>
+
+    <!-- Thank You Popup -->
+    <div class="thank-you-overlay" id="thankYouPopup">
+        <div class="thank-you-content">
+            <h2 class="thank-you-title">Kamu Luar Biasa! ✨</h2>
+            <p class="thank-you-desc">
+                "Terima kasih sudah meluangkan waktu! Satu langkah kecil darimu sangat membantu riset skripsi saya."
+            </p>
+            <button class="submit-btn" onclick="goToHome()">Kembali ke Beranda</button>
+        </div>
+    </div>
     <script>
         function toggleExpectedSkin(show) {
             const container = document.getElementById('expectedSkinContainer');
@@ -339,6 +399,57 @@
         document.getElementById('expectedSkinInput').addEventListener('blur', function() {
             this.style.borderColor = '#e0e0e0';
         });
+
+        // Form submission logic
+        document.getElementById('questionnaireForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Mengirim...';
+
+            const formData = new FormData(this);
+
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if(response.ok) {
+                    showThankYouPopup();
+                } else {
+                    alert('Terjadi kesalahan, silakan coba lagi.');
+                    btn.disabled = false;
+                    btn.textContent = 'Kirim Jawaban';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan, silakan coba lagi.');
+                btn.disabled = false;
+                btn.textContent = 'Kirim Jawaban';
+            });
+        });
+
+        function showThankYouPopup() {
+            const popup = document.getElementById('thankYouPopup');
+            popup.style.display = 'flex';
+            // Trigger reflow
+            void popup.offsetWidth;
+            popup.classList.add('show');
+            
+            // Auto redirect after 8 seconds
+            setTimeout(() => {
+                goToHome();
+            }, 8000);
+        }
+
+        function goToHome() {
+            window.location.href = "{{ route('home') }}";
+        }
     </script>
 </body>
 </html>

@@ -31,6 +31,10 @@ Route::post('/questionnaire/{prediction}', function(\Illuminate\Http\Request $re
         'expected_skin' => $request->input('expected_skin'),
     ]);
     
+    if ($request->ajax() || $request->wantsJson()) {
+        return response()->json(['success' => true]);
+    }
+    
     return redirect()->route('home')->with('message', 'Terima kasih atas partisipasi Anda dalam riset ini!');
 })->name('questionnaire.submit');
 
