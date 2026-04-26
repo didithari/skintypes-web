@@ -582,7 +582,7 @@
             <p class="research-popup-desc">Hanya butuh 1 menit untuk menjawab beberapa pertanyaan singkat. Bantuanmu sangat berharga!</p>
             <div class="research-popup-actions">
                 <a href="{{ route('questionnaire', ['prediction' => $prediction->id]) }}" class="btn-boleh">Boleh, bantu isi</a>
-                <button class="btn-nanti" onclick="closeResearchPopup()">Mungkin nanti</button>
+                <button class="btn-nanti" onclick="closeResearchPopup()">Sebentar dulu</button>
             </div>
         </div>
     </div>
