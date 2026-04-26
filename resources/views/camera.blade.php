@@ -900,10 +900,15 @@
             let edgeSkinCount = 0;
             let leftSkinCount = 0;
             let rightSkinCount = 0;
+            let upperSkinCount = 0;
+            let middleSkinCount = 0;
+            let lowerSkinCount = 0;
             let eyeLeftDarkCount = 0;
             let eyeRightDarkCount = 0;
             let lumaSum = 0;
             let lumaSqSum = 0;
+            let skinXSum = 0;
+            let skinYSum = 0;
             const total = sampleSize * sampleSize;
 
             const cx = sampleSize / 2;
@@ -948,6 +953,17 @@
                         } else {
                             rightSkinCount++;
                         }
+
+                        if (yPos < sampleSize * 0.33) {
+                            upperSkinCount++;
+                        } else if (yPos < sampleSize * 0.68) {
+                            middleSkinCount++;
+                        } else {
+                            lowerSkinCount++;
+                        }
+
+                        skinXSum += xPos;
+                        skinYSum += yPos;
 
                         if (centerEllipse) {
                             centerSkinCount++;
@@ -996,10 +1012,18 @@
             const symmetryDiff = skinCount > 0 ? Math.abs(leftSkinCount - rightSkinCount) / skinCount : 1;
             const eyeLeftDarkRatio = eyeLeftPixelCount > 0 ? eyeLeftDarkCount / eyeLeftPixelCount : 0;
             const eyeRightDarkRatio = eyeRightPixelCount > 0 ? eyeRightDarkCount / eyeRightPixelCount : 0;
+            const upperSkinRatio = skinCount > 0 ? upperSkinCount / skinCount : 0;
+            const middleSkinRatio = skinCount > 0 ? middleSkinCount / skinCount : 0;
+            const lowerSkinRatio = skinCount > 0 ? lowerSkinCount / skinCount : 0;
 
             const lumaMean = lumaSum / total;
             const variance = Math.max(0, (lumaSqSum / total) - (lumaMean * lumaMean));
             const lumaStd = Math.sqrt(variance);
+
+            const skinCentroidX = skinCount > 0 ? skinXSum / skinCount : cx;
+            const skinCentroidY = skinCount > 0 ? skinYSum / skinCount : cy;
+            const centroidDx = Math.abs((skinCentroidX - cx) / cx);
+            const centroidDy = Math.abs((skinCentroidY - cy) / cy);
 
             if (exposureRatio < 0.4) {
                 return 0;
@@ -1025,12 +1049,21 @@
                 return 0;
             }
 
+            if (centroidDx > 0.2 || centroidDy > 0.24) {
+                return 0;
+            }
+
+            if (upperSkinRatio < 0.18 || middleSkinRatio < 0.36 || lowerSkinRatio < 0.16) {
+                return 0;
+            }
+
             const eyeBalance = 1 - Math.min(Math.abs(eyeLeftDarkRatio - eyeRightDarkRatio) / 0.25, 1);
             const symmetryScore = 1 - Math.min(symmetryDiff / 0.35, 1);
             const centerScore = Math.min(centerSkinRatio / 0.35, 1);
             const edgePenalty = Math.min(edgeSkinRatio / 0.2, 1);
+            const centroidScore = 1 - Math.min((centroidDx + centroidDy) / 0.44, 1);
 
-            const score = (0.35 * symmetryScore) + (0.35 * centerScore) + (0.2 * eyeBalance) + (0.1 * (1 - edgePenalty));
+            const score = (0.3 * symmetryScore) + (0.27 * centerScore) + (0.16 * eyeBalance) + (0.1 * (1 - edgePenalty)) + (0.17 * centroidScore);
 
             return Math.max(0, Math.min(1, score));
         }
