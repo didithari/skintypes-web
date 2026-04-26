@@ -30,12 +30,15 @@
             align-items: center;
             justify-content: center;
             position: relative;
+            background: #000;
         }
 
         .camera-wrapper {
             position: relative;
-            width: 100%;
-            height: 100%;
+            width: min(100vw, calc(100dvh * 9 / 16));
+            height: min(100dvh, calc(100vw * 16 / 9));
+            max-width: 100vw;
+            max-height: 100dvh;
             background: #000;
             overflow: hidden;
         }
@@ -63,8 +66,18 @@
 
         .face-frame {
             position: relative;
-            width: 320px;
-            height: 400px;
+            width: min(78%, 320px);
+            aspect-ratio: 4 / 5;
+            height: auto;
+        }
+
+        .face-frame.aligned .face-target-zone {
+            border-color: rgba(50, 196, 126, 0.95);
+            box-shadow: 0 0 0 6px rgba(50, 196, 126, 0.16);
+        }
+
+        .face-frame.aligned .target-line {
+            background: rgba(50, 196, 126, 0.9);
         }
 
         /* Face outline - oval shape */
@@ -86,6 +99,58 @@
             border: 2px solid rgba(50, 196, 126, 0.3);
             border-radius: 50% 50% 45% 45%;
             animation: pulse 2s infinite;
+        }
+
+        .face-target-zone {
+            position: absolute;
+            left: 12%;
+            right: 12%;
+            top: 11%;
+            bottom: 9%;
+            border: 2px dashed rgba(255, 255, 255, 0.75);
+            border-radius: 48% 48% 46% 46%;
+            pointer-events: none;
+            transition: all 0.2s ease;
+        }
+
+
+        .target-line {
+            position: absolute;
+            left: 15%;
+            right: 15%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.65);
+            pointer-events: none;
+            transition: background 0.2s ease;
+        }
+
+        .target-line.eye-line {
+            top: 34%;
+        }
+
+        .target-line.chin-line {
+            top: 78%;
+        }
+
+        .target-label {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.92);
+            font-size: clamp(0.62rem, 1.5vw, 0.72rem);
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .target-label.top {
+            top: 27.5%;
+        }
+
+        .target-label.bottom {
+            top: 81.5%;
         }
 
         /* Checkpoints for alignment */
@@ -250,7 +315,7 @@
             color: white;
             font-weight: 600;
             text-align: center;
-            font-size: 1.1rem;
+            font-size: clamp(0.9rem, 2.2vw, 1.1rem);
             flex: 1;
         }
 
@@ -269,11 +334,11 @@
         }
 
         .shutter-btn {
-            width: 80px;
-            height: 80px;
+            width: 74px;
+            height: 74px;
             border-radius: 50%;
             background: #32C47E;
-            border: 5px solid white;
+            border: 4px solid white;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -284,9 +349,32 @@
         }
 
         .shutter-icon {
-            width: 34px;
-            height: 34px;
+            width: 30px;
+            height: 30px;
             display: block;
+        }
+
+        .camera-wrapper .back-btn {
+            width: 44px !important;
+            height: 44px !important;
+            font-size: 1.15rem !important;
+        }
+
+        .camera-wrapper .face-frame {
+            width: min(78%, 320px) !important;
+            height: auto !important;
+            aspect-ratio: 4 / 5;
+        }
+
+        .camera-wrapper .shutter-btn {
+            width: 74px !important;
+            height: 74px !important;
+            border-width: 4px !important;
+        }
+
+        .camera-wrapper .shutter-icon {
+            width: 30px !important;
+            height: 30px !important;
         }
 
         .shutter-btn:hover {
@@ -595,6 +683,11 @@
                 <!-- Face Frame -->
                 <div class="face-frame">
                     <div class="face-oval"></div>
+                    <div class="face-target-zone"></div>
+                    <div class="target-line eye-line"></div>
+                    <div class="target-line chin-line"></div>
+                    <div class="target-label top">Posisi alis digaris ini</div>
+                    <div class="target-label bottom">Pastikan hidung diatas garis ini</div>
                     
                     <!-- Alignment Points -->
                     <div class="alignment-point eye-left"></div>
@@ -673,9 +766,7 @@
         let mediaPipeStartedAt = 0;
         let mediaPipeLastResultAt = 0;
         let isFaceAligned = false;
-        let faceStableFrames = 0;
-        const heuristicCanvas = document.createElement('canvas');
-        const heuristicCtx = heuristicCanvas.getContext('2d', { willReadFrequently: true });
+        let lastAlignedAt = 0;
         const mediaPipeInputCanvas = document.createElement('canvas');
         const mediaPipeInputCtx = mediaPipeInputCanvas.getContext('2d', { willReadFrequently: false });
         const isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
@@ -763,78 +854,67 @@
             });
         }
 
-        function evaluateFaceBox(box) {
-            const videoRect = video.getBoundingClientRect();
-            const frameRect = faceFrame.getBoundingClientRect();
+        function evaluateFaceBox(box, detectorType = 'generic') {
+            // Cukup cek: ada wajah & posisi vertikal sekitar tengah video
+            const faceCenterY = (box.y + box.height / 2) / video.videoHeight;
+            const faceCenterX = (box.x + box.width / 2) / video.videoWidth;
 
-            const scale = Math.max(
-                videoRect.width / video.videoWidth,
-                videoRect.height / video.videoHeight
-            );
+            // Wajah di sekitar tengah vertikal (15%–85% tinggi video)
+            // dan sekitar tengah horizontal (10%–90% lebar video)
+            const inVerticalCenter = faceCenterY >= 0.15 && faceCenterY <= 0.85;
+            const inHorizontalRange = faceCenterX >= 0.10 && faceCenterX <= 0.90;
 
-            const renderedWidth = video.videoWidth * scale;
-            const renderedHeight = video.videoHeight * scale;
-            const offsetX = videoRect.left + (videoRect.width - renderedWidth) / 2;
-            const offsetY = videoRect.top + (videoRect.height - renderedHeight) / 2;
-
-            const centerX = offsetX + (box.x + box.width / 2) * scale;
-            const centerY = offsetY + (box.y + box.height / 2) * scale;
-            const framePaddingX = isMobileDevice ? 16 : 20;
-            const framePaddingTop = isMobileDevice ? 26 : 22;
-            const framePaddingBottom = isMobileDevice ? 18 : 16;
-
-            const faceLeft = offsetX + box.x * scale;
-            const faceTop = offsetY + box.y * scale;
-            const faceRight = faceLeft + box.width * scale;
-            const faceBottom = faceTop + box.height * scale;
-
-            const fullyInsideFrame =
-                faceLeft >= frameRect.left + framePaddingX &&
-                faceRight <= frameRect.right - framePaddingX &&
-                faceTop >= frameRect.top + framePaddingTop &&
-                faceBottom <= frameRect.bottom - framePaddingBottom;
-
-            const frameCenterX = (frameRect.left + frameRect.right) / 2;
-            const frameCenterY = (frameRect.top + frameRect.bottom) / 2;
-            const normalizedDx = Math.abs(centerX - frameCenterX) / (frameRect.width / 2);
-            const normalizedDy = Math.abs(centerY - frameCenterY) / (frameRect.height / 2);
-            const centerAligned = normalizedDx <= (isMobileDevice ? 0.33 : 0.28) && normalizedDy <= (isMobileDevice ? 0.36 : 0.3);
-
+            // Ukuran wajah minimal (lebih dari 3% lebar video)
             const faceWidthRatio = box.width / video.videoWidth;
-            const faceHeightRatio = box.height / video.videoHeight;
-            const minFaceRatio = isMobileDevice ? 0.08 : 0.15;
-            const maxFaceWidthRatio = isMobileDevice ? 0.9 : 0.75;
-            const maxFaceHeightRatio = isMobileDevice ? 0.95 : 0.85;
-            const faceSizeOk = faceWidthRatio >= minFaceRatio && faceWidthRatio <= maxFaceWidthRatio && faceHeightRatio >= minFaceRatio && faceHeightRatio <= maxFaceHeightRatio;
+            const faceBigEnough = faceWidthRatio >= 0.03;
 
-            if (fullyInsideFrame && centerAligned && faceSizeOk) {
-                updateCaptureState(true, 'Wajah terdeteksi, siap difoto');
+            if (inVerticalCenter && inHorizontalRange && faceBigEnough) {
+                updateCaptureState(true, 'Wajah terdeteksi ✓ Siap difoto');
             } else {
-                updateCaptureState(false, 'Geser wajah agar pas di tengah oval frame');
+                updateCaptureState(false, 'Arahkan wajah ke area tengah frame');
             }
         }
 
         function updateCaptureState(aligned, message) {
-            isFaceAligned = aligned;
-            shutterBtn.disabled = !aligned;
-            infoText.textContent = message;
+            const now = Date.now();
+            faceFrame.classList.toggle('aligned', aligned);
+
+            if (aligned) {
+                lastAlignedAt = now;
+                isFaceAligned = true;
+                shutterBtn.disabled = false;
+                infoText.textContent = message;
+                return;
+            }
+
+            const graceMs = 900;
+            if (now - lastAlignedAt <= graceMs) {
+                isFaceAligned = true;
+                shutterBtn.disabled = false;
+                infoText.textContent = 'Tahan posisi wajah...';
+                faceFrame.classList.add('aligned');
+            } else {
+                isFaceAligned = false;
+                shutterBtn.disabled = true;
+                infoText.textContent = message;
+                faceFrame.classList.remove('aligned');
+            }
         }
 
         function initFaceDetection() {
-            if (isMobileDevice) {
-                if ('FaceDetector' in window) {
-                    initNativeFaceDetection();
-                } else {
-                    initMediaPipeFaceDetection();
-                }
-            } else {
+            if ('FaceDetector' in window) {
+                // Native FaceDetector tersedia (Chrome/Edge)
                 initNativeFaceDetection();
+            } else {
+                // Coba MediaPipe sebagai fallback (mobile & desktop)
+                initMediaPipeFaceDetection();
             }
         }
 
         function initNativeFaceDetection() {
             if (!('FaceDetector' in window)) {
-                initHeuristicFaceDetection();
+                // Tidak ada native, coba MediaPipe
+                initMediaPipeFaceDetection();
                 return;
             }
 
@@ -850,223 +930,6 @@
             faceDetectionInterval = setInterval(detectFaceAndValidateFrame, 350);
         }
 
-        function initHeuristicFaceDetection() {
-            updateCaptureState(false, 'Memeriksa wajah di frame...');
-
-            if (heuristicDetectionInterval) {
-                clearInterval(heuristicDetectionInterval);
-            }
-
-            heuristicDetectionInterval = setInterval(() => {
-                if (!video.videoWidth || !video.videoHeight) {
-                    return;
-                }
-
-                const score = getFaceLikelihoodScore();
-
-                if (score >= 0.62) {
-                    faceStableFrames++;
-                } else {
-                    faceStableFrames = 0;
-                }
-
-                if (faceStableFrames >= 2) {
-                    updateCaptureState(true, 'Wajah terdeteksi (mode lokal), siap difoto');
-                } else {
-                    updateCaptureState(false, 'Arahkan wajah ke tengah frame, objek lain ditolak');
-                }
-            }, 350);
-        }
-
-        function getFaceLikelihoodScore() {
-            const sampleSize = 200;
-            heuristicCanvas.width = sampleSize;
-            heuristicCanvas.height = sampleSize;
-
-            const srcW = video.videoWidth;
-            const srcH = video.videoHeight;
-            const crop = Math.min(srcW, srcH) * 0.5;
-            const sx = (srcW - crop) / 2;
-            const sy = (srcH - crop) / 2;
-
-            heuristicCtx.drawImage(video, sx, sy, crop, crop, 0, 0, sampleSize, sampleSize);
-
-            const imageData = heuristicCtx.getImageData(0, 0, sampleSize, sampleSize);
-            const pixels = imageData.data;
-
-            let skinCount = 0;
-            let brightCount = 0;
-            let centerSkinCount = 0;
-            let edgeSkinCount = 0;
-            let leftSkinCount = 0;
-            let rightSkinCount = 0;
-            let upperSkinCount = 0;
-            let middleSkinCount = 0;
-            let lowerSkinCount = 0;
-            let eyeLeftDarkCount = 0;
-            let eyeRightDarkCount = 0;
-            let lumaSum = 0;
-            let lumaSqSum = 0;
-            let skinXSum = 0;
-            let skinYSum = 0;
-            const total = sampleSize * sampleSize;
-
-            const cx = sampleSize / 2;
-            const cy = sampleSize / 2;
-            let centerPixelCount = 0;
-            let edgePixelCount = 0;
-            let eyeLeftPixelCount = 0;
-            let eyeRightPixelCount = 0;
-
-            const eyeTop = Math.floor(sampleSize * 0.25);
-            const eyeBottom = Math.floor(sampleSize * 0.5);
-            const eyeLeftStart = Math.floor(sampleSize * 0.2);
-            const eyeLeftEnd = Math.floor(sampleSize * 0.45);
-            const eyeRightStart = Math.floor(sampleSize * 0.55);
-            const eyeRightEnd = Math.floor(sampleSize * 0.8);
-
-            for (let yPos = 0; yPos < sampleSize; yPos++) {
-                for (let xPos = 0; xPos < sampleSize; xPos++) {
-                    const i = (yPos * sampleSize + xPos) * 4;
-                    const r = pixels[i];
-                    const g = pixels[i + 1];
-                    const b = pixels[i + 2];
-
-                    const luma = 0.299 * r + 0.587 * g + 0.114 * b;
-                    const cb = 128 - 0.168736 * r - 0.331264 * g + 0.5 * b;
-                    const cr = 128 + 0.5 * r - 0.418688 * g - 0.081312 * b;
-
-                    const isSkinByYCbCr = cb >= 77 && cb <= 132 && cr >= 135 && cr <= 177;
-                    const isSkinByRgb = r > 72 && g > 38 && b > 24 && Math.max(r, g, b) - Math.min(r, g, b) > 14 && r > g && r > b;
-                    const isSkin = isSkinByYCbCr || isSkinByRgb;
-
-                    const nx = (xPos - cx) / cx;
-                    const ny = (yPos - cy) / cy;
-                    const centerEllipse = (nx * nx) / (0.68 * 0.68) + (ny * ny) / (0.92 * 0.92) <= 1;
-                    const edgeRing = Math.abs(nx) > 0.86 || Math.abs(ny) > 0.9;
-
-                    if (isSkin) {
-                        skinCount++;
-
-                        if (xPos < cx) {
-                            leftSkinCount++;
-                        } else {
-                            rightSkinCount++;
-                        }
-
-                        if (yPos < sampleSize * 0.33) {
-                            upperSkinCount++;
-                        } else if (yPos < sampleSize * 0.68) {
-                            middleSkinCount++;
-                        } else {
-                            lowerSkinCount++;
-                        }
-
-                        skinXSum += xPos;
-                        skinYSum += yPos;
-
-                        if (centerEllipse) {
-                            centerSkinCount++;
-                        }
-
-                        if (edgeRing) {
-                            edgeSkinCount++;
-                        }
-                    }
-
-                    if (centerEllipse) {
-                        centerPixelCount++;
-                    }
-
-                    if (edgeRing) {
-                        edgePixelCount++;
-                    }
-
-                    if (luma > 55 && luma < 230) {
-                        brightCount++;
-                    }
-
-                    if (yPos >= eyeTop && yPos <= eyeBottom && xPos >= eyeLeftStart && xPos <= eyeLeftEnd) {
-                        eyeLeftPixelCount++;
-                        if (luma < 85) {
-                            eyeLeftDarkCount++;
-                        }
-                    }
-
-                    if (yPos >= eyeTop && yPos <= eyeBottom && xPos >= eyeRightStart && xPos <= eyeRightEnd) {
-                        eyeRightPixelCount++;
-                        if (luma < 85) {
-                            eyeRightDarkCount++;
-                        }
-                    }
-
-                    lumaSum += luma;
-                    lumaSqSum += luma * luma;
-                }
-            }
-
-            const skinRatio = skinCount / total;
-            const exposureRatio = brightCount / total;
-            const centerSkinRatio = centerPixelCount > 0 ? centerSkinCount / centerPixelCount : 0;
-            const edgeSkinRatio = edgePixelCount > 0 ? edgeSkinCount / edgePixelCount : 0;
-            const symmetryDiff = skinCount > 0 ? Math.abs(leftSkinCount - rightSkinCount) / skinCount : 1;
-            const eyeLeftDarkRatio = eyeLeftPixelCount > 0 ? eyeLeftDarkCount / eyeLeftPixelCount : 0;
-            const eyeRightDarkRatio = eyeRightPixelCount > 0 ? eyeRightDarkCount / eyeRightPixelCount : 0;
-            const upperSkinRatio = skinCount > 0 ? upperSkinCount / skinCount : 0;
-            const middleSkinRatio = skinCount > 0 ? middleSkinCount / skinCount : 0;
-            const lowerSkinRatio = skinCount > 0 ? lowerSkinCount / skinCount : 0;
-
-            const lumaMean = lumaSum / total;
-            const variance = Math.max(0, (lumaSqSum / total) - (lumaMean * lumaMean));
-            const lumaStd = Math.sqrt(variance);
-
-            const skinCentroidX = skinCount > 0 ? skinXSum / skinCount : cx;
-            const skinCentroidY = skinCount > 0 ? skinYSum / skinCount : cy;
-            const centroidDx = Math.abs((skinCentroidX - cx) / cx);
-            const centroidDy = Math.abs((skinCentroidY - cy) / cy);
-
-            if (exposureRatio < 0.4) {
-                return 0;
-            }
-
-            if (skinRatio < 0.13 || skinRatio > 0.62) {
-                return 0;
-            }
-
-            if (centerSkinRatio < 0.18 || edgeSkinRatio > 0.2) {
-                return 0;
-            }
-
-            if (symmetryDiff > 0.35) {
-                return 0;
-            }
-
-            if (eyeLeftDarkRatio < 0.04 || eyeLeftDarkRatio > 0.42 || eyeRightDarkRatio < 0.04 || eyeRightDarkRatio > 0.42) {
-                return 0;
-            }
-
-            if (lumaStd < 20 || lumaStd > 70) {
-                return 0;
-            }
-
-            if (centroidDx > 0.2 || centroidDy > 0.24) {
-                return 0;
-            }
-
-            if (upperSkinRatio < 0.18 || middleSkinRatio < 0.36 || lowerSkinRatio < 0.16) {
-                return 0;
-            }
-
-            const eyeBalance = 1 - Math.min(Math.abs(eyeLeftDarkRatio - eyeRightDarkRatio) / 0.25, 1);
-            const symmetryScore = 1 - Math.min(symmetryDiff / 0.35, 1);
-            const centerScore = Math.min(centerSkinRatio / 0.35, 1);
-            const edgePenalty = Math.min(edgeSkinRatio / 0.2, 1);
-            const centroidScore = 1 - Math.min((centroidDx + centroidDy) / 0.44, 1);
-
-            const score = (0.3 * symmetryScore) + (0.27 * centerScore) + (0.16 * eyeBalance) + (0.1 * (1 - edgePenalty)) + (0.17 * centroidScore);
-
-            return Math.max(0, Math.min(1, score));
-        }
 
         async function initMediaPipeFaceDetection() {
             try {
@@ -1079,17 +942,17 @@
                     mediaPipeLoaded = true;
                 }
 
-                if (!window.FaceDetection || !window.FaceDetection.FaceDetection) {
+                if (!window.FaceDetection) {
                     throw new Error('FaceDetection global tidak tersedia setelah script dimuat');
                 }
 
-                mediaPipeDetector = new FaceDetection.FaceDetection({
+                mediaPipeDetector = new FaceDetection({
                     locateFile: (file) => `${MEDIA_PIPE_FACE_BASE}/${file}`
                 });
 
                 mediaPipeDetector.setOptions({
                     model: 'short',
-                    minDetectionConfidence: isMobileDevice ? 0.3 : 0.35
+                    minDetectionConfidence: isMobileDevice ? 0.2 : 0.3
                 });
 
                 mediaPipeLastResultAt = Date.now();
@@ -1100,25 +963,36 @@
                     const detections = results.detections || [];
 
                     if (detections.length !== 1) {
-                        updateCaptureState(false, 'Arahkan 1 wajah ke dalam frame');
+                        updateCaptureState(false, detections.length === 0
+                            ? 'Arahkan wajah ke dalam frame'
+                            : 'Pastikan hanya 1 wajah di frame');
                         return;
                     }
 
-                    const relativeBox = detections[0].locationData?.relativeBoundingBox;
+                    const det = detections[0];
+                    // MediaPipe bisa pakai format berbeda tergantung versi
+                    const rb = det.locationData?.relativeBoundingBox
+                        || det.boundingBox
+                        || det;
 
-                    if (!relativeBox) {
-                        updateCaptureState(false, 'Wajah belum terbaca, coba dekatkan sedikit');
+                    const xMin = rb.xMin ?? rb.originX ?? rb.x ?? 0;
+                    const yMin = rb.yMin ?? rb.originY ?? rb.y ?? 0;
+                    const w = rb.width ?? 0;
+                    const h = rb.height ?? 0;
+
+                    if (w === 0 || h === 0) {
+                        updateCaptureState(false, 'Wajah belum terbaca, coba dekatkan');
                         return;
                     }
 
                     const box = {
-                        x: relativeBox.xMin * video.videoWidth,
-                        y: relativeBox.yMin * video.videoHeight,
-                        width: relativeBox.width * video.videoWidth,
-                        height: relativeBox.height * video.videoHeight,
+                        x: xMin * video.videoWidth,
+                        y: yMin * video.videoHeight,
+                        width: w * video.videoWidth,
+                        height: h * video.videoHeight,
                     };
 
-                    evaluateFaceBox(box);
+                    evaluateFaceBox(box, 'mediapipe');
                 });
 
                 const runLoop = async () => {
@@ -1130,7 +1004,7 @@
                     if (!mediaPipeBusy) {
                         mediaPipeBusy = true;
                         try {
-                            const targetWidth = isMobileDevice ? 320 : 480;
+                            const targetWidth = isMobileDevice ? 420 : 520;
                             const ratio = video.videoHeight / video.videoWidth;
                             mediaPipeInputCanvas.width = targetWidth;
                             mediaPipeInputCanvas.height = Math.max(180, Math.round(targetWidth * ratio));
@@ -1166,8 +1040,8 @@
                             initNativeFaceDetection();
                             showStatus('⚠ MediaPipe timeout, pakai engine native');
                         } else {
-                            initHeuristicFaceDetection();
-                            showStatus('⚠ MediaPipe timeout, mode lokal aktif');
+                            updateCaptureState(false, 'Deteksi wajah gagal. Coba refresh halaman');
+                            showStatus('⚠ Deteksi wajah tidak tersedia, coba refresh');
                         }
                     }
                 }, 2000);
@@ -1177,8 +1051,8 @@
                     initNativeFaceDetection();
                     showStatus('⚠ MediaPipe gagal, pakai engine native');
                 } else {
-                    initHeuristicFaceDetection();
-                    showStatus('⚠ Mode lokal aktif: validasi wajah sederhana');
+                    updateCaptureState(false, 'Deteksi wajah gagal dimuat. Coba refresh');
+                    showStatus('⚠ Deteksi wajah gagal, coba refresh halaman');
                 }
             }
         }
@@ -1192,7 +1066,7 @@
                 const faces = await faceDetector.detect(video);
 
                 if (faces.length !== 1) {
-                    updateCaptureState(false, 'Arahkan 1 wajah ke dalam frame');
+                    updateCaptureState(false, 'Pastikan hanya 1 wajah di frame');
                     return;
                 }
 
