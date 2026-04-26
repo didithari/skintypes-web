@@ -789,7 +789,10 @@
 
             const faceWidthRatio = box.width / video.videoWidth;
             const faceHeightRatio = box.height / video.videoHeight;
-            const faceSizeOk = faceWidthRatio >= 0.15 && faceWidthRatio <= 0.75 && faceHeightRatio >= 0.15 && faceHeightRatio <= 0.85;
+            const minFaceRatio = isMobileDevice ? 0.08 : 0.15;
+            const maxFaceWidthRatio = isMobileDevice ? 0.9 : 0.75;
+            const maxFaceHeightRatio = isMobileDevice ? 0.95 : 0.85;
+            const faceSizeOk = faceWidthRatio >= minFaceRatio && faceWidthRatio <= maxFaceWidthRatio && faceHeightRatio >= minFaceRatio && faceHeightRatio <= maxFaceHeightRatio;
 
             if (inFrame && faceSizeOk) {
                 updateCaptureState(true, 'Wajah terdeteksi, siap difoto');
@@ -806,7 +809,11 @@
 
         function initFaceDetection() {
             if (isMobileDevice) {
-                initMediaPipeFaceDetection();
+                if ('FaceDetector' in window) {
+                    initNativeFaceDetection();
+                } else {
+                    initMediaPipeFaceDetection();
+                }
             } else {
                 initNativeFaceDetection();
             }
@@ -1036,7 +1043,7 @@
 
                 mediaPipeDetector.setOptions({
                     model: 'short',
-                    minDetectionConfidence: isMobileDevice ? 0.45 : 0.35
+                    minDetectionConfidence: isMobileDevice ? 0.3 : 0.35
                 });
 
                 mediaPipeLastResultAt = Date.now();
