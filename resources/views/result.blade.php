@@ -460,6 +460,99 @@
             color: #7f8c8d;
         }
 
+        /* Research Popup Styles */
+        .research-popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(3px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .research-popup-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .research-popup-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .research-popup-overlay.show .research-popup-content {
+            transform: translateY(0);
+        }
+
+        .research-popup-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .research-popup-desc {
+            font-size: 15px;
+            color: #555;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .research-popup-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .btn-boleh {
+            background: #81c784;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: block;
+        }
+
+        .btn-boleh:hover {
+            background: #66bb6a;
+        }
+
+        .btn-nanti {
+            background: transparent;
+            color: #7f8c8d;
+            border: 2px solid #ecf0f1;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-nanti:hover {
+            background: #f8f9fa;
+            color: #2c3e50;
+            border-color: #bdc3c7;
+        }
+
         @media (max-width: 768px) {
             .products-grid {
                 grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -600,6 +693,18 @@
         </div>
     </div>
 
+    <!-- Research Popup -->
+    <div class="research-popup-overlay" id="researchPopup">
+        <div class="research-popup-content">
+            <h2 class="research-popup-title">Bantu Riset Skripsi Saya? 🙏</h2>
+            <p class="research-popup-desc">Hanya butuh 1 menit untuk menjawab beberapa pertanyaan singkat. Bantuanmu sangat berharga!</p>
+            <div class="research-popup-actions">
+                <a href="{{ route('questionnaire') }}" class="btn-boleh">Boleh, bantu isi</a>
+                <button class="btn-nanti" onclick="closeResearchPopup()">Mungkin nanti</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const imageModal = document.createElement('div');
         imageModal.className = 'modal-overlay';
@@ -664,6 +769,23 @@
         function buyProduct(productName) {
             alert('Fitur pembelian untuk "' + productName + '" akan segera tersedia!');
             // Implementasi redirect ke marketplace atau checkout page
+        }
+
+        // Research popup logic
+        setTimeout(() => {
+            const popup = document.getElementById('researchPopup');
+            popup.style.display = 'flex';
+            // Trigger reflow
+            void popup.offsetWidth;
+            popup.classList.add('show');
+        }, 5000);
+
+        function closeResearchPopup() {
+            const popup = document.getElementById('researchPopup');
+            popup.classList.remove('show');
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 300);
         }
     </script>
 </body>

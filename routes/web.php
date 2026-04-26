@@ -19,6 +19,12 @@ Route::get('/camera', [CameraController::class, 'index'])->name('camera');
 Route::post('/camera/predict', [CameraController::class, 'predict'])->name('camera.predict');
 Route::get('/result/{prediction}', [ResultController::class, 'show'])->name('result');
 
+// Questionnaire Route
+Route::view('/questionnaire', 'questionnaire')->name('questionnaire');
+Route::post('/questionnaire', function() {
+    return redirect()->route('home')->with('message', 'Terima kasih atas partisipasi Anda dalam riset ini!');
+})->name('questionnaire.submit');
+
 // Login Routes
 Route::middleware('guest')->group(function () {
 	Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
