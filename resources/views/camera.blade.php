@@ -669,11 +669,15 @@
         let mediaPipeLoopHandle = null;
         let mediaPipeBusy = false;
         let mediaPipeLoaded = false;
+        let mediaPipeWatchdog = null;
+        let mediaPipeLastResultAt = 0;
         let isFaceAligned = false;
         let faceStableFrames = 0;
         const heuristicCanvas = document.createElement('canvas');
         const heuristicCtx = heuristicCanvas.getContext('2d', { willReadFrequently: true });
-        const MEDIA_PIPE_BASE = '/vendor/mediapipe';
+        const MEDIA_PIPE_FACE_BASE = "{{ asset('vendor/mediapipe/face_detection') }}";
+        const MEDIA_PIPE_FACE_SCRIPT_URL = "{{ asset('vendor/mediapipe/face_detection/face_detection.js') }}";
+        const MEDIA_PIPE_CAMERA_UTILS_URL = "{{ asset('vendor/mediapipe/camera_utils/camera_utils.js') }}";
 
         // Initialize camera
         async function initCamera() {
@@ -720,6 +724,11 @@
             if (mediaPipeLoopHandle) {
                 cancelAnimationFrame(mediaPipeLoopHandle);
                 mediaPipeLoopHandle = null;
+            }
+
+            if (mediaPipeWatchdog) {
+                clearTimeout(mediaPipeWatchdog);
+                mediaPipeWatchdog = null;
             }
 
             mediaPipeBusy = false;
@@ -997,23 +1006,31 @@
         async function initMediaPipeFaceDetection() {
             try {
                 updateCaptureState(false, 'Memuat deteksi wajah...');
+                showStatus('Memulai engine MediaPipe lokal...');
 
                 if (!mediaPipeLoaded) {
-                    await loadScript(`${MEDIA_PIPE_BASE}/face_detection/face_detection.js`);
-                    await loadScript(`${MEDIA_PIPE_BASE}/camera_utils/camera_utils.js`);
+                    await loadScript(MEDIA_PIPE_FACE_SCRIPT_URL);
+                    await loadScript(MEDIA_PIPE_CAMERA_UTILS_URL);
                     mediaPipeLoaded = true;
                 }
 
+                if (!window.FaceDetection || !window.FaceDetection.FaceDetection) {
+                    throw new Error('FaceDetection global tidak tersedia setelah script dimuat');
+                }
+
                 mediaPipeDetector = new FaceDetection.FaceDetection({
-                    locateFile: (file) => `${MEDIA_PIPE_BASE}/face_detection/${file}`
+                    locateFile: (file) => `${MEDIA_PIPE_FACE_BASE}/${file}`
                 });
 
                 mediaPipeDetector.setOptions({
                     model: 'short',
-                    minDetectionConfidence: 0.6
+                    minDetectionConfidence: 0.45
                 });
 
+                mediaPipeLastResultAt = Date.now();
+
                 mediaPipeDetector.onResults((results) => {
+                    mediaPipeLastResultAt = Date.now();
                     const detections = results.detections || [];
 
                     if (detections.length !== 1) {
@@ -1060,6 +1077,15 @@
                 };
 
                 runLoop();
+
+                mediaPipeWatchdog = setTimeout(() => {
+                    if (Date.now() - mediaPipeLastResultAt > 3500) {
+                        console.error('MediaPipe watchdog timeout: tidak ada hasil inferensi.');
+                        stopFaceDetection();
+                        initHeuristicFaceDetection();
+                        showStatus('⚠ MediaPipe tidak merespons, mode lokal aktif');
+                    }
+                }, 4000);
             } catch (error) {
                 console.error('Fallback face detection error:', error);
                 initHeuristicFaceDetection();
