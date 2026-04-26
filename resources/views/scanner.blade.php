@@ -26,12 +26,24 @@
 
         /* Header */
         header {
-            background: white;
+            background: transparent;
             padding: 20px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
+            position: fixed;
+            width: 100%;
             top: 0;
+            left: 0;
             z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid transparent;
+        }
+
+        header.scrolled {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 15px 0;
         }
 
         header .container {
@@ -80,8 +92,40 @@
 
         /* Main Section */
         .scanner-section {
-            padding: 60px 0;
-            background: white;
+            padding: 100px 0 60px;
+            background: #FAFAFA;
+            position: relative;
+            overflow: hidden;
+            min-height: calc(100vh - 70px);
+        }
+
+        .scanner-section::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: #FDF5F6;
+            border-radius: 50%;
+            bottom: -150px;
+            left: -100px;
+            z-index: 0;
+        }
+
+        .scanner-section::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: #F2F5F5;
+            border-radius: 50%;
+            top: 0px;
+            right: -100px;
+            z-index: 0;
+        }
+
+        .scanner-section .container {
+            position: relative;
+            z-index: 1;
         }
 
         .section-title {
@@ -631,25 +675,33 @@
                 <!-- Instructions -->
                 <div class="instructions-grid">
                     <div class="instruction-card">
-                        <div class="instruction-icon">📷</div>
+                        <div class="instruction-icon">
+                            <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        </div>
                         <h3>Izinkan Akses Kamera</h3>
                         <p>Berikan izin akses kamera pada browser untuk memulai proses scanning wajah</p>
                     </div>
 
                     <div class="instruction-card">
-                        <div class="instruction-icon">📐</div>
+                        <div class="instruction-icon">
+                            <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                        </div>
                         <h3>Posisikan Wajah di Frame</h3>
                         <p>Pastikan wajah berada di tengah frame dan teritik jelas seluruhnya</p>
                     </div>
 
                     <div class="instruction-card">
-                        <div class="instruction-icon">💡</div>
+                        <div class="instruction-icon">
+                            <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                        </div>
                         <h3>Pastikan Pencahayaan Cukup</h3>
                         <p>Gunakan pencahayaan natural atau lampu yang terang untuk hasil optimal</p>
                     </div>
 
                     <div class="instruction-card">
-                        <div class="instruction-icon">📸</div>
+                        <div class="instruction-icon">
+                            <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </div>
                         <h3>Ambil Foto & Tunggu Analisis</h3>
                         <p>Tekan tombol capture dan tunggu AI menganalisis kondisi kulit Anda</p>
                     </div>
@@ -657,7 +709,9 @@
 
                 <!-- Phone Mockup -->
                 <div class="phone-mockup">
-                    <div class="check-mark">✓</div>
+                    <div class="check-mark">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
                     <div class="phone">
                         <div class="phone-screen">
                             <div class="phone-header">
@@ -674,8 +728,12 @@
                                 </div>
                             </div>
                             <div class="phone-controls">
-                                <button class="control-btn help-btn">?</button>
-                                <button class="control-btn shutter-btn">📷</button>
+                                <button class="control-btn help-btn">
+                                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </button>
+                                <button class="control-btn shutter-btn">
+                                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><circle cx="12" cy="13" r="3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></circle></svg>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -685,7 +743,8 @@
             <!-- CTA -->
             <div class="cta-container">
                 <a href="{{ route('camera') }}" class="btn-primary">
-                    📷 Mulai Scan Wajah
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Mulai Scan Wajah
                 </a>
                 <div class="cta-note">
                     <strong>Gratis</strong> • Hasil Instan • <strong>100% privat</strong>
@@ -693,5 +752,15 @@
             </div>
         </div>
     </section>
+    <script>
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
 </body>
 </html>
