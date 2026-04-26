@@ -73,59 +73,6 @@
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.12);
         }
 
-        .badge {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 6px 12px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            z-index: 1;
-        }
-
-        .badge-success {
-            background: #81c784;
-            color: white;
-        }
-
-        .badge-danger {
-            background: #e57373;
-            color: white;
-        }
-
-        .favorite-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: white;
-            border: none;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: all 0.2s;
-        }
-
-        .favorite-btn:hover {
-            background: #fee;
-        }
-
-        .favorite-btn svg {
-            width: 20px;
-            height: 20px;
-            fill: none;
-            stroke: #e57373;
-            stroke-width: 2;
-        }
-
         .product-image {
             width: 100%;
             height: 200px;
@@ -485,19 +432,7 @@
             <div class="products-grid">
                 @foreach($products as $index => $product)
                     <div class="product-card">
-                        <!-- Badge -->
-                        @if($index % 3 === 0)
-                            <div class="badge badge-success">Best Seller</div>
-                        @elseif($index % 3 === 1)
-                            <div class="badge badge-danger">Best Price</div>
-                        @endif
 
-                        <!-- Favorite Button -->
-                        <button class="favorite-btn" onclick="toggleFavorite(this)">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                            </svg>
-                        </button>
 
                         <!-- Product Image -->
                         <div class="product-image">
@@ -654,19 +589,6 @@
 
     <script>
         // Modal functionality has been removed
-
-        function toggleFavorite(btn) {
-            const svg = btn.querySelector('svg');
-            const path = svg.querySelector('path');
-            
-            if (svg.style.fill === 'none' || !svg.style.fill) {
-                svg.style.fill = '#e57373';
-                svg.style.stroke = 'none';
-            } else {
-                svg.style.fill = 'none';
-                svg.style.stroke = '#e57373';
-            }
-        }
 
         function buyProduct(productName) {
             alert('Fitur pembelian untuk "' + productName + '" akan segera tersedia!');
