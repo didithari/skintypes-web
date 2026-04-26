@@ -133,14 +133,16 @@
             align-items: center;
             justify-content: center;
             margin-bottom: 16px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: #fff;
             border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #f0f0f0;
         }
 
         .product-image img {
-            max-width: 120px;
-            max-height: 160px;
-            object-fit: contain;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .product-image-fallback {
