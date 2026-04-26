@@ -330,111 +330,7 @@
             height: 16px;
         }
 
-        /* Modal Styles */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(2px);
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            animation: slideUp 0.3s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .modal-header h2 {
-            font-size: 20px;
-            color: #2c3e50;
-            margin: 0;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            color: #7f8c8d;
-            padding: 0;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: color 0.2s;
-        }
-
-        .modal-close:hover {
-            color: #2c3e50;
-        }
-
-        .modal-body {
-            text-align: center;
-        }
-
-        .modal-image {
-            width: 100%;
-            max-width: 500px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            margin-bottom: 16px;
-        }
-
-        .modal-info {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 16px;
-            text-align: left;
-            margin-bottom: 16px;
-        }
-
-        .modal-info p {
-            margin: 8px 0;
-            font-size: 14px;
-            color: #555;
-        }
-
-        .modal-info strong {
-            color: #2c3e50;
-        }
+        /* Modal Styles have been removed */
 
         .empty-products {
             text-align: center;
@@ -573,14 +469,12 @@
             <div class="skin-type-badge">
                 🌿 Tipe Kulit: {{ ucfirst($prediction->skinType->name) }}
             </div>
+            <div style="font-size: 15px; color: #7f8c8d; margin-top: -15px; margin-bottom: 25px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Tingkat Kepercayaan: <strong style="color: #2c3e50;">{{ number_format($prediction->confidence * 100, 1) }}%</strong>
+            </div>
             <h1 class="main-title">Rekomendasi Skincare Untuk Kamu</h1>
             <p class="subtitle">Berdasarkan hasil analisis kulit wajah</p>
-            <button class="view-image-btn" onclick="openImageModal()">
-                <svg fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
-                </svg>
-                Lihat Gambar Wajah
-            </button>
         </div>
 
         <!-- Products Grid -->
@@ -684,13 +578,21 @@
             <p class="bottom-text">
                 Rekomendasi berdasarkan analisis AI. Hasil dapat bervariasi sesuai individu, Konsultasikan dengan dermatologis untuk perawatan yang lebih spesifik.
             </p>
-            <a href="{{ route('scanner') }}" class="scan-again-btn">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-                Scan Ulang
-            </a>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 10px;">
+                <a href="{{ route('scanner') }}" class="scan-again-btn">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    Scan Ulang
+                </a>
+                <a href="{{ route('questionnaire', ['prediction' => $prediction->id]) }}" class="scan-again-btn" style="border-color: #81c784; color: #2e7d32; background: #e8f5e9;">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Isi Kuisioner
+                </a>
+            </div>
         </div>
     </div>
 
@@ -707,52 +609,7 @@
     </div>
 
     <script>
-        const imageModal = document.createElement('div');
-        imageModal.className = 'modal-overlay';
-        imageModal.id = 'imageModal';
-        imageModal.innerHTML = `
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Gambar Yang Dianalisis</h2>
-                    <button class="modal-close" onclick="closeImageModal()">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <img src="{{ asset('storage/' . $prediction->image_path) }}" alt="Gambar wajah yang dianalisis" class="modal-image">
-                    <div class="modal-info">
-                        <p><strong>Tipe Kulit:</strong> {{ ucfirst($prediction->skinType->name) }}</p>
-                        <p><strong>Tingkat Kepercayaan:</strong> {{ number_format($prediction->confidence * 100, 1) }}%</p>
-                        <p><strong>Tanggal Analisis:</strong> {{ $prediction->predicted_at->format('d M Y H:i') }}</p>
-                    </div>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(imageModal);
-
-        function openImageModal() {
-            const modal = document.getElementById('imageModal');
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeImageModal() {
-            const modal = document.getElementById('imageModal');
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
-        // Close modal when clicking backdrop
-        document.getElementById('imageModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeImageModal();
-            }
-        });
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeImageModal();
-            }
-        });
+        // Modal functionality has been removed
 
         function toggleFavorite(btn) {
             const svg = btn.querySelector('svg');
