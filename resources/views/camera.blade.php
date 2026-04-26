@@ -670,11 +670,14 @@
         let mediaPipeBusy = false;
         let mediaPipeLoaded = false;
         let mediaPipeWatchdog = null;
+        let mediaPipeStartedAt = 0;
         let mediaPipeLastResultAt = 0;
         let isFaceAligned = false;
         let faceStableFrames = 0;
         const heuristicCanvas = document.createElement('canvas');
         const heuristicCtx = heuristicCanvas.getContext('2d', { willReadFrequently: true });
+        const mediaPipeInputCanvas = document.createElement('canvas');
+        const mediaPipeInputCtx = mediaPipeInputCanvas.getContext('2d', { willReadFrequently: false });
         const isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
         const MEDIA_PIPE_FACE_BASE = "{{ asset('vendor/mediapipe/face_detection') }}";
         const MEDIA_PIPE_FACE_SCRIPT_URL = "{{ asset('vendor/mediapipe/face_detection/face_detection.js') }}";
@@ -728,7 +731,7 @@
             }
 
             if (mediaPipeWatchdog) {
-                clearTimeout(mediaPipeWatchdog);
+                clearInterval(mediaPipeWatchdog);
                 mediaPipeWatchdog = null;
             }
 
@@ -1037,6 +1040,7 @@
                 });
 
                 mediaPipeLastResultAt = Date.now();
+                mediaPipeStartedAt = Date.now();
 
                 mediaPipeDetector.onResults((results) => {
                     mediaPipeLastResultAt = Date.now();
@@ -1073,7 +1077,13 @@
                     if (!mediaPipeBusy) {
                         mediaPipeBusy = true;
                         try {
-                            await mediaPipeDetector.send({ image: video });
+                            const targetWidth = isMobileDevice ? 320 : 480;
+                            const ratio = video.videoHeight / video.videoWidth;
+                            mediaPipeInputCanvas.width = targetWidth;
+                            mediaPipeInputCanvas.height = Math.max(180, Math.round(targetWidth * ratio));
+                            mediaPipeInputCtx.drawImage(video, 0, 0, mediaPipeInputCanvas.width, mediaPipeInputCanvas.height);
+
+                            await mediaPipeDetector.send({ image: mediaPipeInputCanvas });
                         } catch (error) {
                             console.error('MediaPipe detection error:', error);
                             updateCaptureState(false, 'Deteksi wajah bermasalah, cek pencahayaan');
@@ -1087,14 +1097,27 @@
 
                 runLoop();
 
-                mediaPipeWatchdog = setTimeout(() => {
-                    if (Date.now() - mediaPipeLastResultAt > 3500) {
-                        console.error('MediaPipe watchdog timeout: tidak ada hasil inferensi.');
+                mediaPipeWatchdog = setInterval(() => {
+                    const now = Date.now();
+                    const startupTimeout = isMobileDevice ? 14000 : 6000;
+                    const silenceTimeout = isMobileDevice ? 7000 : 3500;
+
+                    const startupExpired = now - mediaPipeStartedAt > startupTimeout && mediaPipeLastResultAt === mediaPipeStartedAt;
+                    const stalled = now - mediaPipeLastResultAt > silenceTimeout;
+
+                    if (startupExpired || stalled) {
+                        console.error('MediaPipe watchdog timeout: tidak ada hasil inferensi yang stabil.');
                         stopFaceDetection();
-                        initHeuristicFaceDetection();
-                        showStatus('⚠ MediaPipe tidak merespons, mode lokal aktif');
+
+                        if ('FaceDetector' in window) {
+                            initNativeFaceDetection();
+                            showStatus('⚠ MediaPipe timeout, pakai engine native');
+                        } else {
+                            initHeuristicFaceDetection();
+                            showStatus('⚠ MediaPipe timeout, mode lokal aktif');
+                        }
                     }
-                }, 4000);
+                }, 2000);
             } catch (error) {
                 console.error('Fallback face detection error:', error);
                 if ('FaceDetector' in window) {
