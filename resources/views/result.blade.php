@@ -428,9 +428,9 @@
 
 
         <!-- Products Grid -->
-        @if($products->count() > 0)
+        @if($rankedProducts->count() > 0)
             <div class="products-grid">
-                @foreach($products as $index => $product)
+                @foreach($rankedProducts as $index => $product)
                     <div class="product-card">
 
 
