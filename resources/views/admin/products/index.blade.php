@@ -19,7 +19,10 @@
                         <th>Brand</th>
                         <th>Skin Type</th>
                         <th>Harga</th>
-                        <th>Deskripsi</th>
+                        <th>C1</th>
+                        <th>C2</th>
+                        <th>C3</th>
+                        <th>C4</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -37,7 +40,10 @@
                             <td>{{ $product->brand ?? '-' }}</td>
                             <td><span class="badge">{{ $product->skinType->name ?? '-' }}</span></td>
                             <td>{{ $product->price ? 'Rp ' . number_format($product->price, 0, ',', '.') : '-' }}</td>
-                            <td>{{ Str::words($product->description, 5, '...') ?? '-' }}</td>
+                            <td><span class="badge">{{ $product->c1_kandungan }}</span></td>
+                            <td><span class="badge">{{ $product->c2_iritatif }}</span></td>
+                            <td><span class="badge">{{ $product->c3_harga }}</span></td>
+                            <td><span class="badge" style="text-transform:capitalize;">{{ $product->c4_tekstur }}</span></td>
                             <td>
                                 <div class="actions">
                                     <a class="btn btn-secondary" href="{{ route('admin.products.edit', $product) }}">Edit</a>
@@ -51,7 +57,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="muted">Belum ada data product.</td>
+                            <td colspan="10" class="muted">Belum ada data product.</td>
                         </tr>
                     @endforelse
                 </tbody>

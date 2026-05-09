@@ -5,17 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Prediction;
 use App\Models\Product;
+use App\Services\SawService;
 
 class ResultController extends Controller
 {
-    public function show($predictionId)
+    public function show($predictionId, SawService $saw)
     {
-        $prediction = Prediction::with('skinType')->findOrFail($predictionId);
-        
+        $prediction = Prediction::with('skinType.ingredients')->findOrFail($predictionId);
+
         // Get products for this skin type
-        $products = Product::where('skin_type_id', $prediction->skin_type_id)
-            ->get();
-        
-        return view('result', compact('prediction', 'products'));
+        $products = Product::where('skin_type_id', $prediction->skin_type_id)->get();
+
+        // Rank products using SAW method
+        $rankedProducts = $saw->rank($products);
+        $weights = $saw->getWeights();
+
+        return view('result', compact('prediction', 'rankedProducts', 'weights'));
     }
 }

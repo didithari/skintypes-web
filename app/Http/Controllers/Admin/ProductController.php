@@ -29,12 +29,16 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'skin_type_id' => 'required|exists:skin_types,id',
-            'name' => 'required|string|max:255',
-            'brand' => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'nullable|integer|min:0',
-            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'skin_type_id'  => 'required|exists:skin_types,id',
+            'name'          => 'required|string|max:255',
+            'brand'         => 'nullable|string|max:255',
+            'description'   => 'nullable|string',
+            'price'         => 'nullable|integer|min:0',
+            'image_url'     => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'c1_kandungan'  => 'required|integer|min:1|max:4',
+            'c2_iritatif'   => 'required|integer|min:1|max:3',
+            'c4_tekstur'    => 'required|in:gel,foam,cream',
+            'link_produk'   => 'nullable|url|max:500',
         ]);
 
         // Handle image upload
@@ -58,12 +62,16 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $validated = $request->validate([
-            'skin_type_id' => 'required|exists:skin_types,id',
-            'name' => 'required|string|max:255',
-            'brand' => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'nullable|integer|min:0',
-            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'skin_type_id'  => 'required|exists:skin_types,id',
+            'name'          => 'required|string|max:255',
+            'brand'         => 'nullable|string|max:255',
+            'description'   => 'nullable|string',
+            'price'         => 'nullable|integer|min:0',
+            'image_url'     => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'c1_kandungan'  => 'required|integer|min:1|max:4',
+            'c2_iritatif'   => 'required|integer|min:1|max:3',
+            'c4_tekstur'    => 'required|in:gel,foam,cream',
+            'link_produk'   => 'nullable|url|max:500',
         ]);
 
         // Handle image upload
@@ -72,7 +80,7 @@ class ProductController extends Controller
             if ($product->image_url && Storage::disk('public')->exists($product->image_url)) {
                 Storage::disk('public')->delete($product->image_url);
             }
-            
+
             $path = $request->file('image_url')->store('products', 'public');
             $validated['image_url'] = $path;
         } else {
