@@ -179,6 +179,81 @@
             color: #9ca3af;
             cursor: not-allowed;
         }
+        /* Fix Laravel Tailwind pagination in non-Tailwind layout */
+        .pagination-wrap nav {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+            padding: 8px 0;
+        }
+        .pagination-wrap nav > div {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .pagination-wrap nav > div:first-child {
+            display: none;
+        }
+        .pagination-wrap nav span[aria-current="page"] > span {
+            background: #059669;
+            color: #fff;
+            border: 1px solid #059669;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 34px;
+            height: 34px;
+            box-shadow: 0 2px 6px rgba(5, 150, 105, 0.3);
+        }
+        .pagination-wrap nav a {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 13px;
+            text-decoration: none;
+            color: #374151;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 34px;
+            height: 34px;
+            background: #fff;
+            transition: all 0.15s ease;
+        }
+        .pagination-wrap nav a:hover {
+            background: #f0fdf4;
+            border-color: #059669;
+            color: #059669;
+        }
+        .pagination-wrap nav span:not([aria-current]) > span {
+            border: 1px solid #f3f4f6;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 13px;
+            color: #cbd5e1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 34px;
+            height: 34px;
+            background: #f9fafb;
+            cursor: not-allowed;
+        }
+        .pagination-wrap nav svg {
+            width: 14px;
+            height: 14px;
+        }
+        .pagination-wrap nav p {
+            font-size: 13px;
+            color: #6b7280;
+            margin: 0;
+        }
+        .pagination-wrap nav .relative { display: inline-flex; }
         .actions {
             display: flex;
             gap: 8px;
