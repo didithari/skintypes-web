@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\SkinType;
+use App\Services\SawService;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -103,5 +104,57 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('admin.products.index')->with('success', 'Product berhasil dihapus.');
+    }
+
+    /**
+     * SAW ranking preview — shows full calculation breakdown per skin type.
+     */
+    public function sawPreview(Request $request, SawService $saw)
+    {
+        $skinTypes = SkinType::orderBy('name')->get();
+        $activeSkinType = $request->query('skin_type');
+        $weights = $saw->getWeights();
+
+        $teksturMap = [
+            'gel'   => 3,
+            'foam'  => 2,
+            'cream' => 1,
+        ];
+
+        // Decide which skin types to show
+        $displayTypes = $activeSkinType
+            ? $skinTypes->where('id', $activeSkinType)
+            : $skinTypes;
+
+        $rankedGroups = collect();
+
+        foreach ($displayTypes as $skinType) {
+            $products = Product::with('skinType')
+                ->where('skin_type_id', $skinType->id)
+                ->get();
+
+            $ranked = $saw->rank($products);
+
+            // Compute max/min for display
+            $matrix = $products->map(fn ($p) => [
+                'c1' => (int) $p->c1_kandungan,
+                'c2' => (int) $p->c2_iritatif,
+                'c3' => (int) $p->c3_harga,
+                'c4' => $teksturMap[$p->c4_tekstur] ?? 2,
+            ]);
+
+            $rankedGroups[$skinType->name] = [
+                'products'   => $ranked,
+                'maxC1'      => $matrix->max('c1') ?: 1,
+                'minC2'      => $matrix->min('c2') ?: 1,
+                'minC3'      => $matrix->min('c3') ?: 1,
+                'maxC4'      => $matrix->max('c4') ?: 1,
+                'teksturMap' => $teksturMap,
+            ];
+        }
+
+        return view('admin.products.saw-preview', compact(
+            'skinTypes', 'activeSkinType', 'weights', 'rankedGroups'
+        ));
     }
 }

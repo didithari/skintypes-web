@@ -75,6 +75,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 	Route::redirect('/', '/admin/dashboard');
 	Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 	Route::resource('skin-types', SkinTypeController::class)->only(['index', 'edit', 'update']);
+	Route::get('products/saw-preview', [ProductController::class, 'sawPreview'])->name('products.saw-preview');
 	Route::resource('products', ProductController::class)->except(['show']);
 	Route::resource('predictions', PredictionController::class)->only(['index', 'edit', 'update', 'destroy']);
 });
