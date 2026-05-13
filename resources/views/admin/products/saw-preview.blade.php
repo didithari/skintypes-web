@@ -410,15 +410,6 @@
                             </tr>
                         @endforeach
                     </tbody>
-                    <tfoot style="background: #f9fafb;">
-                        <tr>
-                            <td colspan="2" style="font-weight:700; color:#059669; text-align:right;">Max / Min →</td>
-                            <td><span class="highlight-max" style="padding:2px 8px;">Max: {{ $group['maxC1'] }}</span></td>
-                            <td><span class="highlight-min" style="padding:2px 8px;">Min: {{ $group['minC2'] }}</span></td>
-                            <td><span class="highlight-min" style="padding:2px 8px;">Min: {{ $group['minC3'] }}</span></td>
-                            <td><span class="highlight-max" style="padding:2px 8px;">Max: {{ $group['maxC4'] }}</span></td>
-                        </tr>
-                    </tfoot>
                 </table>
             </div>
         </div>
