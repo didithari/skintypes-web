@@ -68,9 +68,9 @@
             <div class="field">
                 <label for="c2_iritatif">C2 - Kandungan Iritatif</label>
                 <select id="c2_iritatif" name="c2_iritatif" required>
-                    <option value="1" @selected(old('c2_iritatif', 1) == 1)>1 - Rendah</option>
-                    <option value="2" @selected(old('c2_iritatif') == 2)>2 - Sedang</option>
-                    <option value="3" @selected(old('c2_iritatif') == 3)>3 - Tinggi</option>
+                    <option value="1" @selected(old('c2_iritatif', 1) == 1)>Tanpa Iritan</option>
+                    <option value="2" @selected(old('c2_iritatif') == 2)>1 Iritan</option>
+                    <option value="3" @selected(old('c2_iritatif') == 3)>&gt;1 Iritan</option>
                 </select>
                 <small style="color:#6b7280; margin-top:4px; display:block;">Cost: Alkohol, Paraben, Fragrance</small>
             </div>

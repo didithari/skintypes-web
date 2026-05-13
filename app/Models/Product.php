@@ -82,9 +82,9 @@ class Product extends Model
     public function getC2LabelAttribute(): string
     {
         return match ($this->c2_iritatif) {
-            1 => 'Rendah',
-            2 => 'Sedang',
-            3 => 'Tinggi',
+            1 => 'Tanpa Iritan',
+            2 => '1 Iritan',
+            3 => '>1 Iritan',
             default => '-',
         };
     }
