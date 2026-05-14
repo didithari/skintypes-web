@@ -26,13 +26,8 @@
 
     <section class="card page-card">
         <div class="panel-header">
-            <h2 class="panel-title">Predictions Analytics</h2>
-            <select class="panel-select" disabled>
-                <option>Last 7 Days</option>
-            </select>
+            <h2 class="panel-title">Riwayat Prediksi</h2>
         </div>
-
-        <div class="analytics-body">Area analytics</div>
 
         <div class="table-wrap">
             <table>
