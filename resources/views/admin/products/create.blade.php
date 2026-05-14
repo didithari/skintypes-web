@@ -46,7 +46,7 @@
             <div class="field">
                 <label for="image_url">Gambar Product</label>
                 <input type="file" id="image_url" name="image_url" accept="image/*">
-                <small style="color:#6b7280; margin-top:4px; display:block;">Format: JPG, PNG, GIF (Max 2MB)</small>
+                <small style="color:#6b7280; margin-top:4px; display:block;">Format: JPG, PNG, GIF, WebP (Max 2MB)</small>
             </div>
 
             {{-- SAW Criteria Section --}}

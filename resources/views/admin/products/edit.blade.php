@@ -53,7 +53,7 @@
                     </div>
                 @endif
                 <input type="file" id="image_url" name="image_url" accept="image/*">
-                <small style="color:#6b7280; margin-top:4px; display:block;">Format: JPG, PNG, GIF (Max 2MB) - Biarkan kosong jika tidak ingin mengubah</small>
+                <small style="color:#6b7280; margin-top:4px; display:block;">Format: JPG, PNG, GIF, WebP (Max 2MB) - Biarkan kosong jika tidak ingin mengubah</small>
             </div>
 
             {{-- SAW Criteria Section --}}
