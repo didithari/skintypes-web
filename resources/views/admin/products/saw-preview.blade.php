@@ -268,6 +268,88 @@
         .info-tag-blue { background: #dbeafe; color: #1d4ed8; }
         .info-tag-amber { background: #fef3c7; color: #b45309; }
 
+        /* Info tooltip (small i icon) */
+        .info-tooltip-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+        .info-tooltip {
+            appearance: none;
+            border: 0;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 999px;
+            background: #eef2f7;
+            color: #475569;
+            font-size: 12px;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            user-select: none;
+            padding: 0;
+        }
+        .info-tooltip:hover {
+            background: #dcfce7;
+            color: #047857;
+        }
+        .info-tooltip:focus {
+            outline: 2px solid #059669;
+            outline-offset: 2px;
+        }
+        .info-popover {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 50%;
+            width: min(520px, 80vw);
+            min-width: 280px;
+            max-height: 240px;
+            overflow: auto;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 14px 16px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+            color: #111827;
+            font-size: 12px;
+            line-height: 1.6;
+            z-index: 9999;
+            opacity: 0;
+            transform: translate(-50%, -4px);
+            pointer-events: none;
+        }
+        .info-popover::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            width: 12px;
+            height: 12px;
+            background: #ffffff;
+            border-left: 1px solid #e5e7eb;
+            border-top: 1px solid #e5e7eb;
+            transform: translateX(-50%) rotate(45deg);
+        }
+        .info-tooltip-wrap:hover .info-popover,
+        .info-tooltip-wrap:focus-within .info-popover {
+            opacity: 1;
+            transform: translate(-50%, 0);
+            pointer-events: auto;
+        }
+        .info-popover p {
+            margin: 0 0 10px;
+        }
+        .info-popover p:last-child {
+            margin-bottom: 0;
+        }
+        .info-popover strong {
+            color: #047857;
+        }
+
         /* Empty state */
         .empty-state {
             text-align: center;
@@ -381,7 +463,16 @@
 
         {{-- Step 1: Matriks Keputusan --}}
         <div class="saw-section">
-            <h3 class="saw-section-title">📐 Matriks Keputusan</h3>
+            <h3 class="saw-section-title">
+                📐 Matriks Keputusan
+                <span class="info-tooltip-wrap">
+                    <button type="button" class="info-tooltip" aria-label="Info kriteria benefit dan cost">i</button>
+                    <div class="info-popover" role="tooltip">
+                        <p><strong>Kriteria Benefit / Keuntungan (R1 - Kandungan &amp; R4 - Tekstur):</strong> Menggunakan prinsip semakin tinggi skor kriteria, maka semakin baik. Produk yang kandungannya paling kaya atau teksturnya paling cocok akan mendapatkan nilai mendekati atau tepat 1.00.</p>
+                        <p><strong>Kriteria Cost / Biaya (R2 - Bahan Iritatif &amp; R3 - Harga):</strong> Menggunakan prinsip semakin rendah skor kriteria, maka semakin bagus. Sistem secara otomatis membalikkan nilai lewat rumus cost, sehingga produk yang paling aman (iritan paling sedikit) atau paling murah justru akan mendapatkan nilai tertinggi yaitu 1.00.</p>
+                    </div>
+                </span>
+            </h3>
             <p class="saw-section-subtitle">Nilai kriteria asli setiap alternatif produk</p>
             <div class="table-wrap">
                 <table class="saw-table">
@@ -416,7 +507,16 @@
 
         {{-- Step 2: Matriks Normalisasi --}}
         <div class="saw-section">
-            <h3 class="saw-section-title">🔄 Matriks Normalisasi (R)</h3>
+            <h3 class="saw-section-title">
+                🔄 Matriks Normalisasi (R)
+                <span class="info-tooltip-wrap">
+                    <button type="button" class="info-tooltip" aria-label="Info kriteria benefit dan cost">i</button>
+                    <div class="info-popover" role="tooltip">
+                        <p><strong>Kriteria Benefit / Keuntungan (R1 - Kandungan &amp; R4 - Tekstur):</strong> Menggunakan prinsip semakin tinggi skor kriteria, maka semakin baik. Produk yang kandungannya paling kaya atau teksturnya paling cocok akan mendapatkan nilai mendekati atau tepat 1.00.</p>
+                        <p><strong>Kriteria Cost / Biaya (R2 - Bahan Iritatif &amp; R3 - Harga):</strong> Menggunakan prinsip semakin rendah skor kriteria, maka semakin bagus. Sistem secara otomatis membalikkan nilai lewat rumus cost, sehingga produk yang paling aman (iritan paling sedikit) atau paling murah justru akan mendapatkan nilai tertinggi yaitu 1.00.</p>
+                    </div>
+                </span>
+            </h3>
             <p class="saw-section-subtitle">Nilai ternormalisasi menggunakan rumus Benefit/Cost</p>
             <div class="table-wrap">
                 <table class="saw-table">

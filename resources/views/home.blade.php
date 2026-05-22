@@ -1112,14 +1112,6 @@
                     <a href="{{ route('scanner') }}" class="btn-primary">
                         Coba Sekarang ➔
                     </a>
-                    <a href="#" class="btn-demo">
-                        <div class="play-icon">
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M8 5v14l11-7z"/>
-                            </svg>
-                        </div>
-                        Lihat Demo
-                    </a>
                 </div>
                 <div class="hero-badge-bottom">
                     <svg viewBox="0 0 24 24" fill="none" stroke="#A8C5B8" stroke-width="2" class="shield">

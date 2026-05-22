@@ -310,6 +310,92 @@
             cursor: pointer;
         }
         .field textarea { min-height: 110px; resize: vertical; }
+
+        /* Info tooltip (small i icon) */
+        .label-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .label-row label {
+            margin-bottom: 0;
+        }
+        .info-tooltip-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .info-tooltip {
+            appearance: none;
+            border: 0;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 999px;
+            background: #eef2f7;
+            color: #475569;
+            font-size: 12px;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            user-select: none;
+            padding: 0;
+        }
+        .info-tooltip:hover {
+            background: #dcfce7;
+            color: #047857;
+        }
+        .info-tooltip:focus {
+            outline: 2px solid #059669;
+            outline-offset: 2px;
+        }
+        .info-popover {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 50%;
+            width: min(420px, 75vw);
+            min-width: 260px;
+            max-height: 220px;
+            overflow: auto;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 12px 14px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+            color: #111827;
+            font-size: 12px;
+            line-height: 1.6;
+            z-index: 9999;
+            opacity: 0;
+            transform: translate(-50%, -4px);
+            pointer-events: none;
+        }
+        .info-popover::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            width: 12px;
+            height: 12px;
+            background: #ffffff;
+            border-left: 1px solid #e5e7eb;
+            border-top: 1px solid #e5e7eb;
+            transform: translateX(-50%) rotate(45deg);
+        }
+        .info-tooltip-wrap:hover .info-popover,
+        .info-tooltip-wrap:focus-within .info-popover {
+            opacity: 1;
+            transform: translate(-50%, 0);
+            pointer-events: auto;
+        }
+        .info-popover p {
+            margin: 0;
+        }
         .alert {
             border-radius: 10px;
             padding: 10px 12px;

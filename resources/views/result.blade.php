@@ -68,6 +68,27 @@
             position: relative;
         }
 
+        /* Ranking badge (Top 3) */
+        .rank-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            z-index: 3;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+        }
+        .rank-1 { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #78350f; }
+        .rank-2 { background: linear-gradient(135deg, #d1d5db, #9ca3af); color: #374151; }
+        .rank-3 { background: linear-gradient(135deg, #f97316, #ea580c); color: #ffffff; }
+        .rank-other { background: #eef2f7; color: #475569; box-shadow: 0 6px 14px rgba(0,0,0,0.10); }
+
         .product-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.12);
@@ -279,7 +300,194 @@
             height: 16px;
         }
 
-        /* Modal Styles have been removed */
+        /* Top #1 Recommendation Popup */
+        .top1-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(3px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            padding: 18px;
+        }
+        .top1-overlay.show {
+            display: flex;
+        }
+        .top1-modal {
+            width: 100%;
+            max-width: 720px;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 18px 60px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+        .top1-header {
+            padding: 18px 20px;
+            background: linear-gradient(135deg, rgba(129, 199, 132, 0.18) 0%, rgba(102, 187, 106, 0.12) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .top1-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+            color: #2c3e50;
+        }
+        .top1-subtitle {
+            margin: 4px 0 0;
+            font-size: 13px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        .top1-close {
+            appearance: none;
+            border: 0;
+            background: rgba(255,255,255,0.9);
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #374151;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        }
+        .top1-close:hover {
+            background: #fff;
+        }
+        .top1-body {
+            padding: 18px 20px 20px;
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 16px;
+        }
+        .top1-product-image {
+            width: 100%;
+            height: 220px;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid #f0f0f0;
+            background: #fff;
+        }
+        .top1-product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .top1-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .top1-rank-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .top1-rank-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            color: #2c3e50;
+        }
+        .top1-rank-badge .rank-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #78350f;
+            box-shadow: 0 8px 18px rgba(245,158,11,0.35);
+        }
+        .top1-product-name {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1.25;
+        }
+        .top1-product-brand {
+            margin: 0;
+            font-size: 13px;
+            color: #6b7280;
+        }
+        .top1-price {
+            font-size: 18px;
+            font-weight: 800;
+            color: #2c3e50;
+        }
+        .top1-reason {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 12px 14px;
+        }
+        .top1-reason h4 {
+            margin: 0 0 8px;
+            font-size: 14px;
+            font-weight: 800;
+            color: #2e7d32;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .top1-reason p {
+            margin: 0 0 10px;
+            font-size: 13px;
+            color: #4b5563;
+            line-height: 1.55;
+        }
+        .top1-reason ul {
+            margin: 0;
+            padding-left: 18px;
+            color: #374151;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .top1-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .top1-actions .buy-btn {
+            width: auto;
+            flex: 1;
+            min-width: 160px;
+        }
+        .top1-actions .btn-secondary-ghost {
+            flex: 1;
+            min-width: 160px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            color: #374151;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .top1-actions .btn-secondary-ghost:hover {
+            background: #f9fafb;
+        }
+        @media (max-width: 720px) {
+            .top1-body {
+                grid-template-columns: 1fr;
+            }
+            .top1-product-image {
+                height: 200px;
+            }
+        }
 
         .empty-products {
             text-align: center;
@@ -304,99 +512,6 @@
 
         .empty-products p {
             color: #7f8c8d;
-        }
-
-        /* Research Popup Styles */
-        .research-popup-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(3px);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .research-popup-overlay.show {
-            display: flex;
-            opacity: 1;
-        }
-
-        .research-popup-content {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
-            transform: translateY(20px);
-            transition: transform 0.3s ease;
-            position: relative;
-        }
-
-        .research-popup-overlay.show .research-popup-content {
-            transform: translateY(0);
-        }
-
-        .research-popup-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
-
-        .research-popup-desc {
-            font-size: 15px;
-            color: #555;
-            margin-bottom: 25px;
-            line-height: 1.5;
-        }
-
-        .research-popup-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-direction: column;
-        }
-
-        .btn-boleh {
-            background: #81c784;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            text-decoration: none;
-            display: block;
-        }
-
-        .btn-boleh:hover {
-            background: #66bb6a;
-        }
-
-        .btn-nanti {
-            background: transparent;
-            color: #7f8c8d;
-            border: 2px solid #ecf0f1;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-nanti:hover {
-            background: #f8f9fa;
-            color: #2c3e50;
-            border-color: #bdc3c7;
         }
 
         @media (max-width: 768px) {
@@ -432,6 +547,10 @@
             <div class="products-grid">
                 @foreach($rankedProducts as $index => $product)
                     <div class="product-card">
+
+                        <div class="rank-badge {{ $index === 0 ? 'rank-1' : ($index === 1 ? 'rank-2' : ($index === 2 ? 'rank-3' : 'rank-other')) }}" aria-label="Ranking {{ $index + 1 }}">
+                            {{ $index + 1 }}
+                        </div>
 
 
                         <!-- Product Image -->
@@ -575,42 +694,113 @@
         </div>
     </div>
 
-    <!-- Research Popup -->
-    <div class="research-popup-overlay" id="researchPopup">
-        <div class="research-popup-content">
-            <h2 class="research-popup-title">Bantu Riset Skripsi Saya? 🙏</h2>
-            <p class="research-popup-desc">Hanya butuh 1 menit untuk menjawab beberapa pertanyaan singkat. Bantuanmu sangat berharga!</p>
-            <div class="research-popup-actions">
-                <a href="{{ route('questionnaire', ['prediction' => $prediction->id]) }}" class="btn-boleh">Boleh, bantu isi</a>
-                <button class="btn-nanti" onclick="closeResearchPopup()">Sebentar dulu</button>
+    @if($rankedProducts->count() > 0)
+        @php
+            $topProduct = $rankedProducts->first();
+            $topProductImage = null;
+            if (!empty($topProduct->image_url)) {
+                $imagePath = ltrim((string) $topProduct->image_url, '/');
+                if (\Illuminate\Support\Str::startsWith($imagePath, ['http://', 'https://'])) {
+                    $topProductImage = $imagePath;
+                } elseif (\Illuminate\Support\Str::startsWith($imagePath, 'storage/')) {
+                    $topProductImage = asset($imagePath);
+                } else {
+                    $topProductImage = asset('storage/' . $imagePath);
+                }
+            }
+        @endphp
+
+        <div class="top1-overlay" id="top1Popup" aria-hidden="true">
+            <div class="top1-modal" role="dialog" aria-modal="true" aria-label="Rekomendasi Produk Terbaik">
+                <div class="top1-header">
+                    <div>
+                        <h2 class="top1-title">Rekomendasi Terbaik untuk {{ ucfirst($prediction->skinType->name) }}</h2>
+                        <p class="top1-subtitle">Dipilih sebagai rekomendasi utama berdasarkan kandungan, potensi iritasi, harga, dan tekstur</p>
+                    </div>
+                    <button type="button" class="top1-close" onclick="closeTop1Popup()" aria-label="Tutup popup">✕</button>
+                </div>
+
+                <div class="top1-body">
+                    <div class="top1-product-image">
+                        <img
+                            src="{{ $topProductImage ?: 'data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"120\" height=\"160\" viewBox=\"0 0 120 160\"><rect width=\"120\" height=\"160\" rx=\"10\" fill=\"%23f1f3f5\"/><text x=\"60\" y=\"84\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12\" fill=\"%236c757d\">No Image</text></svg>' }}"
+                            alt="{{ $topProduct->name }}"
+                        >
+                    </div>
+
+                    <div class="top1-meta">
+                        <div class="top1-rank-row">
+                            <div class="top1-rank-badge">
+                                <span class="rank-circle">1</span>
+                                #1 Produk Teratas
+                            </div>
+                        </div>
+
+                        <h3 class="top1-product-name">{{ $topProduct->name }}</h3>
+                        <p class="top1-product-brand">{{ $topProduct->brand ?? '-' }}</p>
+                        <div class="top1-price">Rp {{ number_format($topProduct->price ?? 0, 0, ',', '.') }}</div>
+
+                        <div class="top1-reason">
+                            <h4><span>✅</span>Alasan direkomendasikan</h4>
+                            <p>
+                                Kulit wajah kamu terdeteksi sebagai <strong>{{ ucfirst($prediction->skinType->name) }}</strong>.
+                                Ini rekomendasi utama yang paling cocok untuk kamu, dilihat dari beberapa faktor penting berikut.
+                            </p>
+                            <ul>
+                                <li><strong>Kandungan aktif</strong>: {{ $topProduct->c1_label }} ({{ $topProduct->c1_kandungan }})</li>
+                                <li><strong>Potensi iritasi</strong>: {{ $topProduct->c2_label }} ({{ $topProduct->c2_iritatif }})</li>
+                                <li><strong>Harga</strong>: {{ $topProduct->c3_label }} ({{ $topProduct->c3_harga }})</li>
+                                <li><strong>Tekstur</strong>: {{ ucfirst($topProduct->c4_tekstur) }}</li>
+                            </ul>
+                        </div>
+
+                        <div class="top1-actions">
+                            <button class="buy-btn" onclick="buyProduct('{{ $topProduct->name }}')">Beli Sekarang</button>
+                            <button type="button" class="btn-secondary-ghost" onclick="closeTop1Popup()">Lihat semua rekomendasi</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    @endif
 
     <script>
         // Modal functionality has been removed
+
+        function openTop1Popup() {
+            var el = document.getElementById('top1Popup');
+            if (!el) return;
+            el.classList.add('show');
+            el.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeTop1Popup() {
+            var el = document.getElementById('top1Popup');
+            if (!el) return;
+            el.classList.remove('show');
+            el.setAttribute('aria-hidden', 'true');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var overlay = document.getElementById('top1Popup');
+            if (!overlay) return;
+
+            openTop1Popup();
+
+            overlay.addEventListener('click', function (e) {
+                if (e.target === overlay) closeTop1Popup();
+            });
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') closeTop1Popup();
+            });
+        });
 
         function buyProduct(productName) {
             alert('Fitur pembelian untuk "' + productName + '" akan segera tersedia!');
             // Implementasi redirect ke marketplace atau checkout page
         }
 
-        // Research popup logic
-        setTimeout(() => {
-            const popup = document.getElementById('researchPopup');
-            popup.style.display = 'flex';
-            // Trigger reflow
-            void popup.offsetWidth;
-            popup.classList.add('show');
-        }, 15000);
-
-        function closeResearchPopup() {
-            const popup = document.getElementById('researchPopup');
-            popup.classList.remove('show');
-            setTimeout(() => {
-                popup.style.display = 'none';
-            }, 300);
-        }
     </script>
 </body>
 </html>

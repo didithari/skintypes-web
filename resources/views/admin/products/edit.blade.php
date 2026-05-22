@@ -62,40 +62,68 @@
             </div>
 
             <div class="field">
-                <label for="c1_kandungan">C1 - Kandungan Aktif</label>
+                <div class="label-row">
+                    <label for="c1_kandungan">C1 - Kandungan Aktif</label>
+                    <span class="info-tooltip-wrap">
+                        <button type="button" class="info-tooltip" aria-label="Info C1 - Kandungan Aktif">i</button>
+                        <div class="info-popover" role="tooltip">
+                            <p><strong>Benefit.</strong> Semakin tinggi nilainya semakin baik. Bobot C1 biasanya diprioritaskan karena kandungan aktif paling berpengaruh pada efektivitas produk.</p>
+                        </div>
+                    </span>
+                </div>
                 <select id="c1_kandungan" name="c1_kandungan" required>
                     <option value="1" @selected(old('c1_kandungan', $product->c1_kandungan) == 1)>1 - Rendah</option>
                     <option value="2" @selected(old('c1_kandungan', $product->c1_kandungan) == 2)>2 - Sedang</option>
                     <option value="3" @selected(old('c1_kandungan', $product->c1_kandungan) == 3)>3 - Tinggi</option>
                     <option value="4" @selected(old('c1_kandungan', $product->c1_kandungan) == 4)>4 - Sangat Tinggi</option>
                 </select>
-                <small style="color:#6b7280; margin-top:4px; display:block;">Benefit: semakin tinggi semakin baik</small>
             </div>
 
             <div class="field">
-                <label for="c2_iritatif">C2 - Kandungan Iritatif</label>
+                <div class="label-row">
+                    <label for="c2_iritatif">C2 - Kandungan Iritatif</label>
+                    <span class="info-tooltip-wrap">
+                        <button type="button" class="info-tooltip" aria-label="Info C2 - Kandungan Iritatif">i</button>
+                        <div class="info-popover" role="tooltip">
+                            <p><strong>Cost.</strong> Semakin rendah nilainya semakin baik. Bobot C2 menekankan keamanan (meminimalkan bahan iritatif seperti alkohol, paraben, dan fragrance).</p>
+                        </div>
+                    </span>
+                </div>
                 <select id="c2_iritatif" name="c2_iritatif" required>
                     <option value="1" @selected(old('c2_iritatif', $product->c2_iritatif) == 1)>Tanpa Iritan</option>
                     <option value="2" @selected(old('c2_iritatif', $product->c2_iritatif) == 2)>1 Iritan</option>
                     <option value="3" @selected(old('c2_iritatif', $product->c2_iritatif) == 3)>&gt;1 Iritan</option>
                 </select>
-                <small style="color:#6b7280; margin-top:4px; display:block;">Cost: Alkohol, Paraben, Fragrance</small>
             </div>
 
             <div class="field">
-                <label>C3 - Range Harga</label>
-                <input type="text" value="Saat ini: {{ $product->c3_harga }} ({{ $product->c3_label }}) — Otomatis dari harga" disabled style="background:#f3f4f6; color:#6b7280;">
-                <small style="color:#6b7280; margin-top:4px; display:block;">Cost: dihitung otomatis dari harga (1=&lt;50rb, 2=50-100rb, 3=100-150rb, 4=&gt;150rb)</small>
+                <div class="label-row">
+                    <label for="c3_harga_info">C3 - Range Harga</label>
+                    <span class="info-tooltip-wrap">
+                        <button type="button" class="info-tooltip" aria-label="Info C3 - Range Harga">i</button>
+                        <div class="info-popover" role="tooltip">
+                            <p><strong>Cost.</strong> Range harga dihitung otomatis dari harga: 1=&lt;50rb, 2=50–100rb, 3=100–150rb, 4=&gt;150rb. Bobot C3 mengatur seberapa sensitif hasil SAW terhadap faktor budget.</p>
+                        </div>
+                    </span>
+                </div>
+                <input id="c3_harga_info" type="text" value="Saat ini: {{ $product->c3_harga }} ({{ $product->c3_label }}) — Otomatis dari harga" disabled style="background:#f3f4f6; color:#6b7280;">
             </div>
 
             <div class="field">
-                <label for="c4_tekstur">C4 - Tekstur</label>
+                <div class="label-row">
+                    <label for="c4_tekstur">C4 - Tekstur</label>
+                    <span class="info-tooltip-wrap">
+                        <button type="button" class="info-tooltip" aria-label="Info C4 - Tekstur">i</button>
+                        <div class="info-popover" role="tooltip">
+                            <p><strong>Benefit.</strong> Tekstur diberi skor (gel=3, foam=2, cream=1). Bobot C4 dipakai untuk menyeimbangkan kenyamanan/feel produk terhadap kriteria lain saat perangkingan.</p>
+                        </div>
+                    </span>
+                </div>
                 <select id="c4_tekstur" name="c4_tekstur" required>
                     <option value="gel" @selected(old('c4_tekstur', $product->c4_tekstur) == 'gel')>Gel</option>
                     <option value="foam" @selected(old('c4_tekstur', $product->c4_tekstur) == 'foam')>Foam</option>
                     <option value="cream" @selected(old('c4_tekstur', $product->c4_tekstur) == 'cream')>Cream</option>
                 </select>
-                <small style="color:#6b7280; margin-top:4px; display:block;">Benefit: gel=3, foam=2, cream=1</small>
             </div>
 
             <div class="field form-full">
