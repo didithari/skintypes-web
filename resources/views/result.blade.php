@@ -713,18 +713,66 @@
                 'normal' => 'normal',
                 default => ucfirst((string) ($prediction->skinType->name ?? '')),
             };
-            $c1Explain = match ((int) $topProduct->c1_kandungan) {
-                4 => 'Kandungan aktifnya sangat tinggi, membantu menargetkan kebutuhan utama kulit (mis. kontrol minyak/kelembapan).',
-                3 => 'Kandungan aktifnya tinggi, cukup kuat untuk membantu perawatan rutin tanpa terasa “terlalu berat”.',
-                2 => 'Kandungan aktifnya sedang, cenderung lebih aman dan cocok untuk pemakaian harian.',
-                1 => 'Kandungan aktifnya rendah, biasanya terasa lebih gentle untuk kulit yang mudah reaktif.',
-                default => 'Kandungan aktifnya dinilai seimbang untuk pemakaian rutin.',
+
+            // Penjelasan dibuat beda per tipe kulit (case): kering / normal / berminyak
+            $c1Value = (int) $topProduct->c1_kandungan;
+            $c2Value = (int) $topProduct->c2_iritatif;
+            $c1Explain = match ($skinName) {
+                'dry' => match ($c1Value) {
+                    4 => 'Untuk kulit kering: kandungan aktif sangat tinggi membantu menjaga kelembapan dan memperkuat skin barrier, jadi kulit terasa lebih nyaman.',
+                    3 => 'Untuk kulit kering: kandungan aktif tinggi membantu hidrasi dan perawatan rutin tanpa terasa “kasar” di kulit.',
+                    2 => 'Untuk kulit kering: kandungan aktif sedang cenderung lebih gentle untuk pemakaian harian dan minim risiko kulit terasa ketarik.',
+                    1 => 'Untuk kulit kering: kandungan aktif rendah biasanya paling aman kalau kulit sedang sensitif/lagi kering-keringnya.',
+                    default => 'Untuk kulit kering: kandungan aktifnya dinilai seimbang untuk pemakaian rutin.',
+                },
+                'oily' => match ($c1Value) {
+                    4 => 'Untuk kulit berminyak: kandungan aktif sangat tinggi membantu kontrol minyak, membersihkan pori, dan membantu mencegah jerawat.',
+                    3 => 'Untuk kulit berminyak: kandungan aktif tinggi cukup efektif untuk kontrol sebum dan menjaga kulit tetap bersih.',
+                    2 => 'Untuk kulit berminyak: kandungan aktif sedang tetap membantu perawatan harian tanpa terasa terlalu “keras”.',
+                    1 => 'Untuk kulit berminyak: kandungan aktif rendah cocok bila kamu lebih fokus ke pembersihan gentle dan menjaga skin barrier.',
+                    default => 'Untuk kulit berminyak: kandungan aktifnya dinilai seimbang untuk pemakaian rutin.',
+                },
+                'normal' => match ($c1Value) {
+                    4 => 'Untuk kulit normal: kandungan aktif sangat tinggi membantu hasil lebih terasa, tapi tetap perhatikan respons kulit.',
+                    3 => 'Untuk kulit normal: kandungan aktif tinggi membantu menjaga kulit tetap bersih dan terawat dengan baik.',
+                    2 => 'Untuk kulit normal: kandungan aktif sedang biasanya paling “aman” dan nyaman untuk pemakaian harian.',
+                    1 => 'Untuk kulit normal: kandungan aktif rendah cocok bila kamu ingin opsi yang simpel dan gentle.',
+                    default => 'Untuk kulit normal: kandungan aktifnya dinilai seimbang untuk pemakaian rutin.',
+                },
+                default => match ($c1Value) {
+                    4 => 'Kandungan aktifnya sangat tinggi, membantu menargetkan kebutuhan utama kulit.',
+                    3 => 'Kandungan aktifnya tinggi, cukup efektif untuk perawatan rutin.',
+                    2 => 'Kandungan aktifnya sedang, cenderung aman untuk pemakaian harian.',
+                    1 => 'Kandungan aktifnya rendah, biasanya terasa lebih gentle.',
+                    default => 'Kandungan aktifnya dinilai seimbang untuk pemakaian rutin.',
+                },
             };
-            $c2Explain = match ((int) $topProduct->c2_iritatif) {
-                1 => 'Tidak terdeteksi bahan iritan utama, jadi relatif lebih aman untuk pemakaian rutin.',
-                2 => 'Ada sedikit potensi iritan, tapi masih tergolong moderat untuk banyak orang (tetap perhatikan reaksi kulit).',
-                3 => 'Ada beberapa potensi iritan, jadi disarankan coba bertahap/patch test terlebih dulu.',
-                default => 'Potensi iritasinya dinilai moderat untuk pemakaian rutin.',
+
+            $c2Explain = match ($skinName) {
+                'dry' => match ($c2Value) {
+                    1 => 'Untuk kulit kering: minim iritan membantu mengurangi risiko kulit makin kering/terasa perih saat dipakai rutin.',
+                    2 => 'Untuk kulit kering: ada sedikit potensi iritasi, jadi sebaiknya perhatikan bila kulit mudah perih atau mengelupas.',
+                    3 => 'Untuk kulit kering: potensi iritasi lebih tinggi, disarankan coba bertahap (patch test) agar tidak memicu kering/kemerahan.',
+                    default => 'Untuk kulit kering: potensi iritasinya dinilai moderat.',
+                },
+                'oily' => match ($c2Value) {
+                    1 => 'Untuk kulit berminyak: minim iritan membuatnya lebih aman dipakai rutin tanpa memicu kemerahan yang tidak perlu.',
+                    2 => 'Untuk kulit berminyak: ada sedikit potensi iritasi, tetap aman untuk banyak orang tapi pantau kalau muncul kering/ketarik.',
+                    3 => 'Untuk kulit berminyak: potensi iritasi lebih tinggi, jadi lebih baik mulai pelan-pelan agar tidak mengganggu skin barrier.',
+                    default => 'Untuk kulit berminyak: potensi iritasinya dinilai moderat.',
+                },
+                'normal' => match ($c2Value) {
+                    1 => 'Untuk kulit normal: minim iritan membuatnya aman untuk pemakaian rutin.',
+                    2 => 'Untuk kulit normal: ada sedikit potensi iritasi, tetap pantau reaksi kulit terutama bila sensitif.',
+                    3 => 'Untuk kulit normal: potensi iritasi lebih tinggi, sebaiknya coba bertahap agar kulit tetap nyaman.',
+                    default => 'Untuk kulit normal: potensi iritasinya dinilai moderat.',
+                },
+                default => match ($c2Value) {
+                    1 => 'Tidak terdeteksi bahan iritan utama, jadi relatif lebih aman untuk pemakaian rutin.',
+                    2 => 'Ada sedikit potensi iritan, tapi masih tergolong moderat untuk banyak orang.',
+                    3 => 'Ada beberapa potensi iritan, jadi disarankan coba bertahap/patch test terlebih dulu.',
+                    default => 'Potensi iritasinya dinilai moderat untuk pemakaian rutin.',
+                },
             };
             $c3Explain = match ((int) $topProduct->c3_harga) {
                 1 => 'Harganya terjangkau, cocok untuk pemakaian rutin tanpa terlalu membebani budget.',
@@ -734,15 +782,31 @@
                 default => 'Harganya dinilai seimbang dibanding manfaat yang didapat.',
             };
             $tekstur = strtolower((string) ($topProduct->c4_tekstur ?? ''));
-            $c4Explain = match ($tekstur) {
-                'gel' => ($skinName === 'oily')
-                    ? 'Tekstur gel terasa ringan dan biasanya lebih nyaman untuk kulit berminyak.'
-                    : 'Tekstur gel terasa ringan dan cepat menyerap, cocok untuk rasa “bersih” setelah cuci muka.',
-                'cream' => ($skinName === 'dry')
-                    ? 'Tekstur cream cenderung lebih melembapkan dan nyaman untuk kulit kering.'
-                    : 'Tekstur cream terasa lebih rich, membantu menjaga kelembapan setelah cuci muka.',
-                'foam' => 'Tekstur foam umumnya memberi sensasi bersih dan praktis untuk pemakaian harian.',
-                default => 'Teksturnya dipilih karena nyaman dan cocok untuk pemakaian harian.',
+            $c4Explain = match ($skinName) {
+                'dry' => match ($tekstur) {
+                    'cream' => 'Untuk kulit kering: tekstur cream cenderung lebih lembap dan nyaman, membantu mengurangi rasa ketarik setelah cuci muka.',
+                    'gel' => 'Untuk kulit kering: tekstur gel terasa ringan, tapi pastikan kulit tetap terasa nyaman (tidak ketarik) setelah pemakaian.',
+                    'foam' => 'Untuk kulit kering: foam bisa terasa lebih “kesat”, jadi pilih yang lembut supaya tidak bikin kulit makin kering.',
+                    default => 'Untuk kulit kering: teksturnya dipilih agar tetap nyaman untuk pemakaian harian.',
+                },
+                'oily' => match ($tekstur) {
+                    'gel' => 'Untuk kulit berminyak: tekstur gel biasanya paling nyaman karena ringan dan tidak terasa berat di kulit.',
+                    'foam' => 'Untuk kulit berminyak: foam memberi sensasi bersih dan membantu mengangkat minyak berlebih.',
+                    'cream' => 'Untuk kulit berminyak: cream terasa lebih rich, cocok bila kulit juga mudah dehidrasi/ketarik.',
+                    default => 'Untuk kulit berminyak: teksturnya dipilih agar nyaman dan tetap terasa bersih.',
+                },
+                'normal' => match ($tekstur) {
+                    'foam' => 'Untuk kulit normal: foam terasa praktis dan memberi sensasi bersih untuk pemakaian harian.',
+                    'gel' => 'Untuk kulit normal: gel terasa ringan dan nyaman, cocok untuk penggunaan rutin.',
+                    'cream' => 'Untuk kulit normal: cream terasa lebih lembap, cocok bila ingin hasil akhir lebih “hydrated”.',
+                    default => 'Untuk kulit normal: teksturnya dipilih agar nyaman untuk pemakaian harian.',
+                },
+                default => match ($tekstur) {
+                    'gel' => 'Tekstur gel terasa ringan dan cepat menyerap.',
+                    'foam' => 'Tekstur foam umumnya memberi sensasi bersih dan praktis.',
+                    'cream' => 'Tekstur cream terasa lebih rich dan membantu menjaga kelembapan.',
+                    default => 'Teksturnya dipilih karena nyaman dan cocok untuk pemakaian harian.',
+                },
             };
             $topProductImage = null;
             if (!empty($topProduct->image_url)) {
