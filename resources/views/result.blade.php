@@ -318,10 +318,13 @@
         .top1-modal {
             width: 100%;
             max-width: 720px;
+            max-height: calc(100vh - 36px);
             background: #fff;
             border-radius: 18px;
             box-shadow: 0 18px 60px rgba(0,0,0,0.25);
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
         .top1-header {
             padding: 18px 20px;
@@ -365,6 +368,9 @@
             display: grid;
             grid-template-columns: 220px 1fr;
             gap: 16px;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+            flex: 1;
         }
         .top1-product-image {
             width: 100%;
@@ -481,6 +487,9 @@
             background: #f9fafb;
         }
         @media (max-width: 720px) {
+            .top1-overlay {
+                padding: 12px;
+            }
             .top1-body {
                 grid-template-columns: 1fr;
             }
