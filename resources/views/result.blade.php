@@ -706,6 +706,44 @@
     @if($rankedProducts->count() > 0)
         @php
             $topProduct = $rankedProducts->first();
+            $skinName = strtolower((string) ($prediction->skinType->name ?? ''));
+            $skinNameLabel = match ($skinName) {
+                'dry' => 'kering',
+                'oily' => 'berminyak',
+                'normal' => 'normal',
+                default => ucfirst((string) ($prediction->skinType->name ?? '')),
+            };
+            $c1Explain = match ((int) $topProduct->c1_kandungan) {
+                4 => 'Kandungan aktifnya sangat tinggi, membantu menargetkan kebutuhan utama kulit (mis. kontrol minyak/kelembapan).',
+                3 => 'Kandungan aktifnya tinggi, cukup kuat untuk membantu perawatan rutin tanpa terasa “terlalu berat”.',
+                2 => 'Kandungan aktifnya sedang, cenderung lebih aman dan cocok untuk pemakaian harian.',
+                1 => 'Kandungan aktifnya rendah, biasanya terasa lebih gentle untuk kulit yang mudah reaktif.',
+                default => 'Kandungan aktifnya dinilai seimbang untuk pemakaian rutin.',
+            };
+            $c2Explain = match ((int) $topProduct->c2_iritatif) {
+                1 => 'Tidak terdeteksi bahan iritan utama, jadi relatif lebih aman untuk pemakaian rutin.',
+                2 => 'Ada sedikit potensi iritan, tapi masih tergolong moderat untuk banyak orang (tetap perhatikan reaksi kulit).',
+                3 => 'Ada beberapa potensi iritan, jadi disarankan coba bertahap/patch test terlebih dulu.',
+                default => 'Potensi iritasinya dinilai moderat untuk pemakaian rutin.',
+            };
+            $c3Explain = match ((int) $topProduct->c3_harga) {
+                1 => 'Harganya terjangkau, cocok untuk pemakaian rutin tanpa terlalu membebani budget.',
+                2 => 'Harganya masih di range yang aman untuk pemakaian rutin.',
+                3 => 'Harganya menengah–premium, biasanya seimbang antara kualitas dan biaya pemakaian.',
+                4 => 'Harganya premium, namun dipilih karena faktor lain (kandungan/keamanan/tekstur) tetap paling cocok secara keseluruhan.',
+                default => 'Harganya dinilai seimbang dibanding manfaat yang didapat.',
+            };
+            $tekstur = strtolower((string) ($topProduct->c4_tekstur ?? ''));
+            $c4Explain = match ($tekstur) {
+                'gel' => ($skinName === 'oily')
+                    ? 'Tekstur gel terasa ringan dan biasanya lebih nyaman untuk kulit berminyak.'
+                    : 'Tekstur gel terasa ringan dan cepat menyerap, cocok untuk rasa “bersih” setelah cuci muka.',
+                'cream' => ($skinName === 'dry')
+                    ? 'Tekstur cream cenderung lebih melembapkan dan nyaman untuk kulit kering.'
+                    : 'Tekstur cream terasa lebih rich, membantu menjaga kelembapan setelah cuci muka.',
+                'foam' => 'Tekstur foam umumnya memberi sensasi bersih dan praktis untuk pemakaian harian.',
+                default => 'Teksturnya dipilih karena nyaman dan cocok untuk pemakaian harian.',
+            };
             $topProductImage = null;
             if (!empty($topProduct->image_url)) {
                 $imagePath = ltrim((string) $topProduct->image_url, '/');
@@ -752,14 +790,26 @@
                         <div class="top1-reason">
                             <h4><span>✅</span>Alasan direkomendasikan</h4>
                             <p>
-                                Kulit wajah kamu terdeteksi sebagai <strong>{{ ucfirst($prediction->skinType->name) }}</strong>.
+                                Kulit wajah kamu terdeteksi sebagai <strong>{{ $skinNameLabel }}</strong>.
                                 Ini rekomendasi utama yang paling cocok untuk kamu, dilihat dari beberapa faktor penting berikut.
                             </p>
                             <ul>
-                                <li><strong>Kandungan aktif</strong>: {{ $topProduct->c1_label }} ({{ $topProduct->c1_kandungan }})</li>
-                                <li><strong>Potensi iritasi</strong>: {{ $topProduct->c2_label }} ({{ $topProduct->c2_iritatif }})</li>
-                                <li><strong>Harga</strong>: {{ $topProduct->c3_label }} ({{ $topProduct->c3_harga }})</li>
-                                <li><strong>Tekstur</strong>: {{ ucfirst($topProduct->c4_tekstur) }}</li>
+                                <li>
+                                    <strong>Kandungan aktif</strong>: {{ $topProduct->c1_label }}
+                                    <div style="color:#6b7280; font-size:12.5px; margin-top:4px;">{{ $c1Explain }}</div>
+                                </li>
+                                <li>
+                                    <strong>Potensi iritasi</strong>: {{ $topProduct->c2_label }}
+                                    <div style="color:#6b7280; font-size:12.5px; margin-top:4px;">{{ $c2Explain }}</div>
+                                </li>
+                                <li>
+                                    <strong>Harga</strong>: {{ $topProduct->c3_label }}
+                                    <div style="color:#6b7280; font-size:12.5px; margin-top:4px;">{{ $c3Explain }}</div>
+                                </li>
+                                <li>
+                                    <strong>Tekstur</strong>: {{ ucfirst($topProduct->c4_tekstur) }}
+                                    <div style="color:#6b7280; font-size:12.5px; margin-top:4px;">{{ $c4Explain }}</div>
+                                </li>
                             </ul>
                         </div>
 
