@@ -60,7 +60,7 @@ class CameraController extends Controller
                 'image',
                 file_get_contents(storage_path("app/public/$path")),
                 'photo.jpg'
-            )->post('http://70.153.24.9:5000/predict');
+            )->post('http://172.188.80.185:5000/predict');
 
             if ($response->successful()) {
                 $result = $response->json();
