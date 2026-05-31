@@ -193,6 +193,7 @@
             background: #81c784;
             color: white;
             border: none;
+            text-decoration: none;
             padding: 12px 20px;
             border-radius: 10px;
             font-size: 14px;
@@ -615,12 +616,26 @@
                         </div>
 
                         <!-- Buy Button -->
-                        <button class="buy-btn" onclick="buyProduct('{{ $product->name }}')">
-                            Beli Sekarang
-                            <svg fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
-                            </svg>
-                        </button>
+                        @php
+                            $buyLink = trim((string) $product->link_produk);
+                            $buyLinkIsUsable = $buyLink !== '' && preg_match('/^https?:\\/\\//i', $buyLink);
+                        @endphp
+
+                        @if($buyLinkIsUsable)
+                            <a class="buy-btn" href="{{ $buyLink }}" target="_blank" rel="noopener noreferrer">
+                                Beli Sekarang
+                                <svg fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+                                </svg>
+                            </a>
+                        @else
+                            <button class="buy-btn" type="button" onclick="alert('Link produk belum tersedia.')">
+                                Beli Sekarang
+                                <svg fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+                                </svg>
+                            </button>
+                        @endif
                     </div>
                 @endforeach
             </div>
@@ -878,7 +893,16 @@
                         </div>
 
                         <div class="top1-actions">
-                            <button class="buy-btn" onclick="buyProduct('{{ $topProduct->name }}')">Beli Sekarang</button>
+                            @php
+                                $topBuyLink = trim((string) $topProduct->link_produk);
+                                $topBuyLinkIsUsable = $topBuyLink !== '' && preg_match('/^https?:\\/\\//i', $topBuyLink);
+                            @endphp
+
+                            @if($topBuyLinkIsUsable)
+                                <a class="buy-btn" href="{{ $topBuyLink }}" target="_blank" rel="noopener noreferrer">Beli Sekarang</a>
+                            @else
+                                <button class="buy-btn" type="button" onclick="alert('Link produk belum tersedia.')">Beli Sekarang</button>
+                            @endif
                             <button type="button" class="btn-secondary-ghost" onclick="closeTop1Popup()">Lihat semua rekomendasi</button>
                         </div>
                     </div>
@@ -918,11 +942,6 @@
                 if (e.key === 'Escape') closeTop1Popup();
             });
         });
-
-        function buyProduct(productName) {
-            alert('Fitur pembelian untuk "' + productName + '" akan segera tersedia!');
-            // Implementasi redirect ke marketplace atau checkout page
-        }
 
     </script>
 </body>
