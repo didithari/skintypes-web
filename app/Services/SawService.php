@@ -91,13 +91,16 @@ class SawService
             ];
         }
 
-        // Step 4: Sort by V descending, attach details, add rank
+        // Step 4: Sort by V descending, tiebreaker by price ascending, attach details, add rank
         return $products
             ->map(function ($product) use ($scores) {
                 $product->saw_details = $scores[$product->id] ?? null;
                 return $product;
             })
-            ->sortByDesc(fn ($p) => $p->saw_details['v'] ?? 0)
+            ->sortBy([
+                fn ($a, $b) => ($b->saw_details['v'] ?? 0) <=> ($a->saw_details['v'] ?? 0), // V: descending
+                fn ($a, $b) => (int) $a->price <=> (int) $b->price,                          // Harga: ascending (tiebreaker)
+            ])
             ->values()
             ->map(function ($product, $index) {
                 $product->saw_rank = $index + 1;
