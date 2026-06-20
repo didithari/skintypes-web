@@ -72,10 +72,10 @@
                     </span>
                 </div>
                 <select id="c1_kandungan" name="c1_kandungan" required>
-                    <option value="1" @selected(old('c1_kandungan', $product->c1_kandungan) == 1)>1 - Rendah</option>
-                    <option value="2" @selected(old('c1_kandungan', $product->c1_kandungan) == 2)>2 - Sedang</option>
-                    <option value="3" @selected(old('c1_kandungan', $product->c1_kandungan) == 3)>3 - Tinggi</option>
-                    <option value="4" @selected(old('c1_kandungan', $product->c1_kandungan) == 4)>4 - Sangat Tinggi</option>
+                    <option value="1" @selected(old('c1_kandungan', $product->c1_kandungan) == 1)>1 - Rendah = 1</option>
+                    <option value="2" @selected(old('c1_kandungan', $product->c1_kandungan) == 2)>2 - Sedang = 2</option>
+                    <option value="3" @selected(old('c1_kandungan', $product->c1_kandungan) == 3)>3 - Tinggi = 3</option>
+                    <option value="4" @selected(old('c1_kandungan', $product->c1_kandungan) == 4)>4 - Sangat Tinggi ≥4</option>
                 </select>
             </div>
 
@@ -120,9 +120,9 @@
                     </span>
                 </div>
                 <select id="c4_tekstur" name="c4_tekstur" required>
-                    <option value="gel" @selected(old('c4_tekstur', $product->c4_tekstur) == 'gel')>Gel</option>
-                    <option value="foam" @selected(old('c4_tekstur', $product->c4_tekstur) == 'foam')>Foam</option>
-                    <option value="cream" @selected(old('c4_tekstur', $product->c4_tekstur) == 'cream')>Cream</option>
+                    <option value="gel" @selected(old('c4_tekstur', $product->c4_tekstur) == 'gel')>Gel = 3</option>
+                    <option value="foam" @selected(old('c4_tekstur', $product->c4_tekstur) == 'foam')>Foam = 2</option>
+                    <option value="cream" @selected(old('c4_tekstur', $product->c4_tekstur) == 'cream')>Cream = 1</option>
                 </select>
             </div>
 
