@@ -817,6 +817,8 @@
         const MEDIA_PIPE_FACE_BASE = "{{ asset('vendor/mediapipe/face_detection') }}";
         const MEDIA_PIPE_FACE_SCRIPT_URL = "{{ asset('vendor/mediapipe/face_detection/face_detection.js') }}";
         const MEDIA_PIPE_CAMERA_UTILS_URL = "{{ asset('vendor/mediapipe/camera_utils/camera_utils.js') }}";
+        // Toggle MediaPipe usage: set to false to temporarily disable MediaPipe
+        const MEDIA_PIPE_ENABLED = false;
 
         // Initialize camera
         async function initCamera() {
@@ -950,6 +952,18 @@
         }
 
         function initFaceDetection() {
+            if (!MEDIA_PIPE_ENABLED) {
+                // MediaPipe dimatikan sementara.
+                // Jika native FaceDetector tersedia, pakai itu; jika tidak, izinkan pengambilan foto manual.
+                if ('FaceDetector' in window) {
+                    initNativeFaceDetection();
+                } else {
+                    updateCaptureState(true, 'Deteksi wajah dimatikan sementara. Tekan tombol untuk mengambil foto');
+                    showStatus('⚠ MediaPipe dinonaktifkan sementara');
+                }
+                return;
+            }
+
             if ('FaceDetector' in window) {
                 // Native FaceDetector tersedia (Chrome/Edge)
                 initNativeFaceDetection();
