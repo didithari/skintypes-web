@@ -13,18 +13,24 @@ class ResultController extends Controller
     {
         $prediction = Prediction::with('skinType.ingredients')->findOrFail($predictionId);
 
-        $pricePreference = request()->query('price_preference', 'lowest');
+        $maxPrice = request()->integer('max_price');
         $texturePreference = request()->query('texture_preference', 'foam');
 
-        $saw->setPreferenceWeights($pricePreference, $texturePreference);
+        $saw->setPreferenceWeights('lowest', $texturePreference);
 
         // Get products for this skin type
-        $products = Product::where('skin_type_id', $prediction->skin_type_id)->get();
+        $productsQuery = Product::where('skin_type_id', $prediction->skin_type_id);
+
+        if ($maxPrice !== null && $maxPrice > 0) {
+            $productsQuery->where('price', '<=', $maxPrice);
+        }
+
+        $products = $productsQuery->get();
 
         // Rank products using SAW method
         $rankedProducts = $saw->rank($products);
         $weights = $saw->getWeights();
 
-        return view('result', compact('prediction', 'rankedProducts', 'weights'));
+        return view('result', compact('prediction', 'rankedProducts', 'weights', 'maxPrice'));
     }
 }

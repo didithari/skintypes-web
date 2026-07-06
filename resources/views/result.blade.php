@@ -524,6 +524,13 @@
             color: #7f8c8d;
         }
 
+        .empty-products .not-found-message {
+            margin-top: 8px;
+            color: #c62828;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
         @media (max-width: 768px) {
             .products-grid {
                 grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -645,7 +652,10 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
                 </svg>
                 <h3>Belum Ada Produk</h3>
-                <p>Produk untuk tipe kulit {{ $prediction->skinType->name }} akan segera tersedia</p>
+                @if(!empty($maxPrice))
+                    <p>Produk untuk tipe kulit {{ $prediction->skinType->name }} dengan harga sampai Rp {{ number_format($maxPrice, 0, ',', '.') }} tidak tersedia.</p>
+                @endif
+                <p class="not-found-message">produk tidak ditemukan</p>
             </div>
         @endif
 

@@ -904,11 +904,16 @@
                     </div>
                     <div class="preference-body">
                         <div class="preference-field">
-                            <label for="pricePreference">Pilihan harga</label>
-                            <select id="pricePreference">
-                                <option value="lowest">Harga terendah / paling terjangkau</option>
-                                <option value="highest">Harga tertinggi / premium</option>
-                            </select>
+                            <label for="pricePreference">Batas harga maksimum</label>
+                            <input
+                                id="pricePreference"
+                                type="number"
+                                min="0"
+                                step="1000"
+                                inputmode="numeric"
+                                placeholder="Contoh: 50000"
+                                style="width:100%; border:1px solid #d1d5db; border-radius:12px; padding:12px 14px; font-size:0.95rem; background:#fff; color:#111827; outline:none;"
+                            >
                         </div>
                         <div class="preference-field">
                             <label for="texturePreference">Preferensi tekstur</label>
@@ -918,7 +923,7 @@
                                 <option value="cream">Cream</option>
                             </select>
                         </div>
-                        <p class="preference-note">Jika kamu pilih harga terendah, sistem akan lebih memprioritaskan produk yang lebih murah. Tekstur yang dipilih akan mendapat bobot lebih besar pada ranking.</p>
+                        <p class="preference-note">Masukkan batas harga maksimum. Sistem hanya akan menampilkan produk dengan harga di bawah atau sama dengan nominal ini. Tekstur yang dipilih tetap dipakai untuk ranking.</p>
                         <div class="preference-actions">
                             <button type="button" class="preference-cancel" onclick="closePreferenceModal()">Batal</button>
                             <button type="button" class="preference-submit" onclick="applyPreferences()">Lanjutkan</button>
@@ -1407,8 +1412,15 @@
                 return;
             }
 
+            const maxPrice = parseInt(pricePreference.value, 10);
+
+            if (Number.isNaN(maxPrice) || maxPrice <= 0) {
+                showStatus('❌ Masukkan batas harga yang valid');
+                return;
+            }
+
             const url = new URL(pendingRedirectUrl, window.location.origin);
-            url.searchParams.set('price_preference', pricePreference.value);
+            url.searchParams.set('max_price', String(maxPrice));
             url.searchParams.set('texture_preference', texturePreference.value);
             closePreferenceModal();
             window.location.href = url.toString();
