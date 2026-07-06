@@ -26,6 +26,54 @@ class SawService
     ];
 
     /**
+     * Update weight configuration based on user preference.
+     */
+    public function setPreferenceWeights(string $pricePreference = 'lowest', string $texturePreference = 'foam'): void
+    {
+        $pricePreference = in_array($pricePreference, ['lowest', 'highest'], true) ? $pricePreference : 'lowest';
+        $texturePreference = in_array($texturePreference, ['gel', 'foam', 'cream'], true) ? $texturePreference : 'foam';
+
+        $baseWeights = [
+            'c1' => 0.38,
+            'c2' => 0.22,
+            'c3' => $pricePreference === 'lowest' ? 0.28 : 0.16,
+            'c4' => 0.12,
+        ];
+
+        if ($pricePreference === 'highest') {
+            $baseWeights['c1'] = 0.40;
+            $baseWeights['c2'] = 0.24;
+            $baseWeights['c3'] = 0.16;
+            $baseWeights['c4'] = 0.20;
+        }
+
+        $textureBoost = [
+            'gel' => 0.18,
+            'foam' => 0.16,
+            'cream' => 0.14,
+        ];
+
+        $selectedTextureBoost = $textureBoost[$texturePreference] ?? 0.16;
+        $remaining = 1 - $selectedTextureBoost;
+
+        $this->weights = [
+            'c1' => round($baseWeights['c1'] * $remaining, 4),
+            'c2' => round($baseWeights['c2'] * $remaining, 4),
+            'c3' => round($baseWeights['c3'] * $remaining, 4),
+            'c4' => round($selectedTextureBoost, 4),
+        ];
+
+        $total = array_sum($this->weights);
+
+        if ($total > 0) {
+            $this->weights = array_map(
+                fn (float $weight) => round($weight / $total, 4),
+                $this->weights
+            );
+        }
+    }
+
+    /**
      * Mapping tekstur ke nilai numerik untuk perhitungan benefit.
      * Semakin tinggi = semakin baik (gel paling cocok untuk kulit berminyak, cream untuk kering).
      * Mapping ini menjadi kontekstual per skin type — tetapi untuk SAW sederhana,

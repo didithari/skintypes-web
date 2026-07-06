@@ -460,6 +460,114 @@
             font-size: 0.95rem;
         }
 
+        .preference-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.62);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1100;
+            padding: 18px;
+        }
+
+        .preference-modal.show {
+            display: flex;
+        }
+
+        .preference-card {
+            width: 100%;
+            max-width: 420px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+            overflow: hidden;
+        }
+
+        .preference-header {
+            padding: 18px 20px;
+            background: linear-gradient(135deg, rgba(50, 196, 126, 0.14), rgba(33, 150, 243, 0.10));
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .preference-header h2 {
+            font-size: 1.2rem;
+            color: #111827;
+            margin-bottom: 6px;
+        }
+
+        .preference-header p {
+            font-size: 0.92rem;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .preference-body {
+            padding: 18px 20px 20px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .preference-field label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .preference-field select {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 0.95rem;
+            background: #fff;
+            color: #111827;
+            outline: none;
+        }
+
+        .preference-field select:focus {
+            border-color: #32C47E;
+            box-shadow: 0 0 0 3px rgba(50, 196, 126, 0.14);
+        }
+
+        .preference-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .preference-actions button {
+            flex: 1;
+            min-height: 46px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .preference-cancel {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .preference-submit {
+            background: #32C47E;
+            color: #fff;
+        }
+
+        .preference-submit:hover {
+            background: #28a66d;
+        }
+
+        .preference-note {
+            font-size: 0.82rem;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
         .retry-btn {
             background: #32C47E;
             color: white;
@@ -786,6 +894,38 @@
                 <img id="qrcode" src="" alt="QR Code">
                 <button class="back-btn-desktop" onclick="goBack()">Kembali</button>
             </div>
+
+            <!-- Preference Modal -->
+            <div class="preference-modal" id="preferenceModal" aria-hidden="true">
+                <div class="preference-card" role="dialog" aria-modal="true" aria-labelledby="preferenceTitle">
+                    <div class="preference-header">
+                        <h2 id="preferenceTitle">Atur Preferensi Rekomendasi</h2>
+                        <p>Setelah hasil Flask didapat, pilih preferensi harga dan tekstur. Dua pilihan ini akan dipakai sebagai bobot tambahan saat perangkingan produk.</p>
+                    </div>
+                    <div class="preference-body">
+                        <div class="preference-field">
+                            <label for="pricePreference">Pilihan harga</label>
+                            <select id="pricePreference">
+                                <option value="lowest">Harga terendah / paling terjangkau</option>
+                                <option value="highest">Harga tertinggi / premium</option>
+                            </select>
+                        </div>
+                        <div class="preference-field">
+                            <label for="texturePreference">Preferensi tekstur</label>
+                            <select id="texturePreference">
+                                <option value="gel">Gel</option>
+                                <option value="foam">Foam</option>
+                                <option value="cream">Cream</option>
+                            </select>
+                        </div>
+                        <p class="preference-note">Jika kamu pilih harga terendah, sistem akan lebih memprioritaskan produk yang lebih murah. Tekstur yang dipilih akan mendapat bobot lebih besar pada ranking.</p>
+                        <div class="preference-actions">
+                            <button type="button" class="preference-cancel" onclick="closePreferenceModal()">Batal</button>
+                            <button type="button" class="preference-submit" onclick="applyPreferences()">Lanjutkan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -797,6 +937,9 @@
         const permissionDenied = document.getElementById('permissionDenied');
         const infoText = document.querySelector('.info-text');
         const faceFrame = document.querySelector('.face-frame');
+        const preferenceModal = document.getElementById('preferenceModal');
+        const pricePreference = document.getElementById('pricePreference');
+        const texturePreference = document.getElementById('texturePreference');
         let stream = null;
         let faceDetector = null;
         let faceDetectionInterval = null;
@@ -811,6 +954,7 @@
         let isFaceAligned = false;
         let lastAlignedAt = 0;
         let lastFaceBox = null;
+        let pendingRedirectUrl = null;
         const mediaPipeInputCanvas = document.createElement('canvas');
         const mediaPipeInputCtx = mediaPipeInputCanvas.getContext('2d', { willReadFrequently: false });
         const isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
@@ -1215,16 +1359,12 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    pendingRedirectUrl = data.redirectUrl || null;
                     showStatus('✓ Analisis selesai!');
                     console.log('Result:', data);
                     setTimeout(() => {
-                        // Redirect to result page
-                        if (data.redirectUrl) {
-                            window.location.href = data.redirectUrl;
-                        } else {
-                            alert('Tipe Kulit: ' + data.skinType + '\nPrediksi: ' + data.prediction);
-                        }
-                    }, 1500);
+                        showPreferenceModal();
+                    }, 600);
                 } else {
                     showStatus('❌ ' + (data.message || 'Gagal menganalisis'));
                     shutterBtn.disabled = false;
@@ -1247,6 +1387,31 @@
                     statusMessage.classList.remove('show');
                 }, 2500);
             }
+        }
+
+        function showPreferenceModal() {
+            preferenceModal.classList.add('show');
+            preferenceModal.setAttribute('aria-hidden', 'false');
+        }
+
+        function closePreferenceModal() {
+            preferenceModal.classList.remove('show');
+            preferenceModal.setAttribute('aria-hidden', 'true');
+            shutterBtn.disabled = false;
+        }
+
+        function applyPreferences() {
+            if (!pendingRedirectUrl) {
+                showStatus('❌ Hasil belum siap. Silakan coba lagi.');
+                closePreferenceModal();
+                return;
+            }
+
+            const url = new URL(pendingRedirectUrl, window.location.origin);
+            url.searchParams.set('price_preference', pricePreference.value);
+            url.searchParams.set('texture_preference', texturePreference.value);
+            closePreferenceModal();
+            window.location.href = url.toString();
         }
 
         // Go back

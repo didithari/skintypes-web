@@ -13,6 +13,11 @@ class ResultController extends Controller
     {
         $prediction = Prediction::with('skinType.ingredients')->findOrFail($predictionId);
 
+        $pricePreference = request()->query('price_preference', 'lowest');
+        $texturePreference = request()->query('texture_preference', 'foam');
+
+        $saw->setPreferenceWeights($pricePreference, $texturePreference);
+
         // Get products for this skin type
         $products = Product::where('skin_type_id', $prediction->skin_type_id)->get();
 
