@@ -26,6 +26,11 @@ class SawService
     ];
 
     /**
+     * Flag to exclude price from the ranking score.
+     */
+    protected bool $excludePriceFromRanking = false;
+
+    /**
      * Update weight configuration based on user preference.
      */
     public function setPreferenceWeights(string $pricePreference = 'lowest', string $texturePreference = 'foam'): void
@@ -70,6 +75,37 @@ class SawService
                 fn (float $weight) => round($weight / $total, 4),
                 $this->weights
             );
+        }
+    }
+
+    /**
+     * Use budget only as a filter, not as a ranking criterion.
+     */
+    public function setBudgetFilterMode(string $texturePreference = 'foam'): void
+    {
+        $texturePreference = in_array($texturePreference, ['gel', 'foam', 'cream'], true) ? $texturePreference : 'foam';
+
+        $textureBoost = [
+            'gel' => 0.20,
+            'foam' => 0.20,
+            'cream' => 0.20,
+        ];
+
+        $this->excludePriceFromRanking = true;
+        $this->weights = [
+            'c1' => 0.45,
+            'c2' => 0.25,
+            'c3' => 0.00,
+            'c4' => $textureBoost[$texturePreference] ?? 0.20,
+        ];
+
+        $total = $this->weights['c1'] + $this->weights['c2'] + $this->weights['c4'];
+
+        if ($total > 0) {
+            $this->weights['c1'] = round($this->weights['c1'] / $total, 4);
+            $this->weights['c2'] = round($this->weights['c2'] / $total, 4);
+            $this->weights['c3'] = 0.0000;
+            $this->weights['c4'] = round($this->weights['c4'] / $total, 4);
         }
     }
 
@@ -122,7 +158,7 @@ class SawService
         foreach ($matrix as $row) {
             $r1 = $row['c1'] / $maxC1;                           // Benefit
             $r2 = ($row['c2'] > 0) ? $minC2 / $row['c2'] : 1;   // Cost
-            $r3 = ($row['c3'] > 0) ? $minC3 / $row['c3'] : 1;   // Cost
+            $r3 = $this->excludePriceFromRanking ? 1 : (($row['c3'] > 0) ? $minC3 / $row['c3'] : 1);   // Cost
             $r4 = $row['c4'] / $maxC4;                           // Benefit
 
             $v = ($this->weights['c1'] * $r1)
@@ -147,7 +183,10 @@ class SawService
             })
             ->sortBy([
                 fn ($a, $b) => ($b->saw_details['v'] ?? 0) <=> ($a->saw_details['v'] ?? 0), // V: descending
-                fn ($a, $b) => (int) $a->price <=> (int) $b->price,                          // Harga: ascending (tiebreaker)
+                fn ($a, $b) => (int) $b->c1_kandungan <=> (int) $a->c1_kandungan,
+                fn ($a, $b) => (int) $a->c2_iritatif <=> (int) $b->c2_iritatif,
+                fn ($a, $b) => (int) $b->c4_tekstur <=> (int) $a->c4_tekstur,
+                fn ($a, $b) => (int) $a->id <=> (int) $b->id,
             ])
             ->values()
             ->map(function ($product, $index) {

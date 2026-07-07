@@ -16,7 +16,11 @@ class ResultController extends Controller
         $maxPrice = request()->integer('max_price');
         $texturePreference = request()->query('texture_preference', 'foam');
 
-        $saw->setPreferenceWeights('lowest', $texturePreference);
+        if ($maxPrice !== null && $maxPrice > 0) {
+            $saw->setBudgetFilterMode($texturePreference);
+        } else {
+            $saw->setPreferenceWeights('lowest', $texturePreference);
+        }
 
         // Get products for this skin type
         $productsQuery = Product::where('skin_type_id', $prediction->skin_type_id);
